@@ -8,16 +8,24 @@
 
 ## 📖 简介
 
-`ListenUiComponent` 是 Listen 系列原生 Android 应用的通用视觉设计系统与 Compose UI 组件库。统一基础配色、深浅色模式、强调色调色盘以及可复用的复杂交互控件。
+`ListenUiComponent` 是 Listen 系列原生 Android 应用的**跨项目通用视觉设计系统与 UI 组件库**。彻底剥离了特定的领域/业务逻辑，统一应用基础配色、深浅色/纯黑模式、6+ 动态 Accent 强调色调色盘，以及独立成类的基础通用控件。
 
 ---
 
-## 🌟 核心组件
+## 🌟 核心模块结构 (`com.listen.uicomponent`)
 
-- **Material 3 主题系统**：动态 Color Token、深浅/AMOLED 色彩模式与 6+ 强调色 (Accent Color Palette)。
-- **通用计算器键盘**：`CustomKeypad` 自定义数字计算键盘，支持算术求和与高效键盘交互。
-- **Canvas 图表组件库**：`DonutChart` 环形占比图、`BarChart` 收支对比柱状图、`LineChart` 趋势折线图。
-- **基础通用控件**：`CommonCard`、`CategoryBadge`、`ItemRow`、交互浮窗与通用按钮。
+- **`theme/`**：
+  - `Color.kt`：基础色彩 Token、深浅/AMOLED 色彩模式与 6+ 强调色 (`EMERALD`, `OCEAN_BLUE`, `SUNSET_ORANGE`, `ROYAL_PURPLE`, `ROSE`, `AMBER`)。
+  - `Theme.kt`：`ListenTheme` Material 3 动态 Theme 包装器。
+- **`keypad/`**：
+  - `NumericKeypad.kt`：通用数字/计算器键盘组件（支持通用数字按键、退格、确定以及可选算术运算符）。
+- **`charts/`**：
+  - `DonutChart.kt`：通用 Canvas 环形占比图。
+- **`components/`**（每个组件独立成类）：
+  - `SurfaceCard.kt`：规范化圆角阴影 Surface 卡片。
+  - `IconBadge.kt`：通用图标与彩色背景徽章。
+  - `EmptyStateView.kt`：通用空状态图文。
+  - `LoadingView.kt`：居中加载指示器。
 
 ---
 
