@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ListenUiComponent"
 include(":app")
- 
+project(":app").name = "listen-uicomponent"

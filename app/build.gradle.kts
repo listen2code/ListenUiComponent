@@ -1,7 +1,10 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp") version "2.2.10-2.0.2"
 }
+
+group = "com.listen"
 
 android {
     namespace = "com.listen.uicomponent"
@@ -27,14 +30,14 @@ android {
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2026.02.01"))
-    implementation("androidx.activity:activity-compose:1.8.0")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.core:core-ktx:1.12.0")
+    api(platform("androidx.compose:compose-bom:2026.02.01"))
+    api("androidx.activity:activity-compose:1.8.0")
+    api("androidx.compose.material3:material3")
+    api("androidx.compose.material:material-icons-core")
+    api("androidx.compose.ui:ui")
+    api("androidx.compose.ui:ui-graphics")
+    api("androidx.compose.ui:ui-tooling-preview")
+    api("androidx.core:core-ktx:1.12.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2026.02.01"))

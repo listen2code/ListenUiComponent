@@ -37,10 +37,10 @@ fun NumericKeypad(
         )
     } else {
         listOf(
-            listOf("7", "8", "9"),
-            listOf("4", "5", "6"),
-            listOf("1", "2", "3"),
-            listOf(".", "0", "DEL")
+            listOf("7", "8", "9", "DEL"),
+            listOf("4", "5", "6", "00"),
+            listOf("1", "2", "3", "."),
+            listOf("0", "OK")
         )
     }
 
@@ -56,9 +56,10 @@ fun NumericKeypad(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 row.forEach { key ->
+                    val weight = if (key == "OK" && !showOperators) 3f else if (key == "0" && !showOperators) 1f else 1f
                     KeypadButton(
                         key = key,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(weight),
                         onClick = {
                             when (key) {
                                 "DEL" -> onDeletePress()
@@ -98,7 +99,7 @@ private fun KeypadButton(
 
     val labelText = when (key) {
         "DEL" -> "⌫"
-        "OK" -> "✓"
+        "OK" -> "完成记账 ✓"
         else -> key
     }
 
@@ -112,8 +113,8 @@ private fun KeypadButton(
     ) {
         Text(
             text = labelText,
-            fontSize = if (key == "DEL" || key == "OK") 22.sp else 20.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontSize = if (key == "OK") 16.sp else if (key == "DEL") 22.sp else 20.sp,
+            fontWeight = FontWeight.Bold,
             color = contentColor
         )
     }
