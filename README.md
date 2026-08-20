@@ -8,24 +8,29 @@
 
 ## 📖 简介
 
-`ListenUiComponent` 是 Listen 系列原生 Android 应用的**跨项目通用视觉设计系统与 UI 组件库**。彻底剥离了特定的领域/业务逻辑，统一应用基础配色、深浅色/纯黑模式、6+ 动态 Accent 强调色调色盘，以及独立成类的基础通用控件。
+`ListenUiComponent` 是 Listen 系列原生 Android 应用的**跨项目通用视觉设计系统与 UI 组件库**。彻底剥离了特定的领域/业务逻辑，统一应用基础配色、深浅色/纯黑模式、6+ 动态 Accent 强调色调色盘，以及独立成类的基础通用控件与 Canvas 图表系统。
 
 ---
 
 ## 🌟 核心模块结构 (`com.listen.uicomponent`)
 
 - **`theme/`**：
-  - `Color.kt`：基础色彩 Token、深浅/AMOLED 色彩模式与 6+ 强调色 (`EMERALD`, `OCEAN_BLUE`, `SUNSET_ORANGE`, `ROYAL_PURPLE`, `ROSE`, `AMBER`)。
+  - `Color.kt`：基础色彩 Token、收支红绿标准色与 6 种动态强调色 (`EMERALD`, `SAPPHIRE`, `AMBER`, `ROSE`, `VIOLET`, `SLATE`)。
   - `Theme.kt`：`ListenTheme` Material 3 动态 Theme 包装器。
 - **`keypad/`**：
-  - `NumericKeypad.kt`：通用数字/计算器键盘组件（支持通用数字按键、退格、确定以及可选算术运算符）。
+  - `NumericKeypad.kt`：通用数字键盘组件（支持算术运算符、退格、最大金额安全边界与醒目“完成记账 ✓”按钮）。
 - **`charts/`**：
-  - `DonutChart.kt`：通用 Canvas 环形占比图。
-- **`components/`**（每个组件独立成类）：
-  - `SurfaceCard.kt`：规范化圆角阴影 Surface 卡片。
+  - `DonutChart.kt`：通用 Canvas 环形占比图（自适应中心指标展示）。
+  - `BarChart.kt`：通用 Canvas 垂直柱状走势图。
+- **`components/`**：
+  - `SurfaceCard.kt`：规范化圆角卡片容器，支持精准 `cornerRadius` 与 `contentPadding` 几何对齐。
+  - `SegmentedProgressBar.kt`：通用多色分段比例条。
+  - `SearchBarInput.kt`：通用圆角搜索输入框。
   - `IconBadge.kt`：通用图标与彩色背景徽章。
-  - `EmptyStateView.kt`：通用空状态图文。
+  - `EmptyStateView.kt`：通用空状态图文提示。
   - `LoadingView.kt`：居中加载指示器。
+- **`apm/`**：
+  - `LogInspectorSheet.kt`：APM 实时日志浮窗（支持水平滑动 Chip 过滤、文本一键导出与对齐按钮）。
 
 ---
 
@@ -42,7 +47,7 @@ includeBuild("../ListenUiComponent")
 
 ```kotlin
 dependencies {
-    implementation("com.listen:listen-uicomponent:1.0.0")
+    implementation("com.listen:listen-uicomponent")
 }
 ```
 
