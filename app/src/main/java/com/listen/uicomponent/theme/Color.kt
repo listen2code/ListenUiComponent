@@ -29,11 +29,13 @@ enum class AccentColor(val colorHex: String, val nameZh: String, val nameEn: Str
 fun parseHexColor(hex: String, fallback: Color = Color(0xFF10B981)): Color {
     return try {
         val cleaned = hex.removePrefix("#")
-        val colorInt = cleaned.toLong(16).toInt()
+        val colorLong = cleaned.toLong(16)
         if (cleaned.length == 6) {
-            Color(colorInt or 0xFF000000.toInt())
+            Color(0xFF000000L or colorLong)
+        } else if (cleaned.length == 8) {
+            Color(colorLong)
         } else {
-            Color(colorInt)
+            fallback
         }
     } catch (e: Exception) {
         fallback

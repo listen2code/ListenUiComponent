@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SurfaceCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 16.dp,
+    cornerRadius: Dp = 12.dp,
+    contentPadding: Dp = 12.dp,
     content: @Composable () -> Unit
 ) {
     Card(
@@ -22,7 +23,7 @@ fun SurfaceCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = modifier
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(contentPadding)) {
             content()
         }
     }
