@@ -18,12 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 /**
  * Universal Base Screen Scaffold with Slot API for Compose Declarative UI.
  * Replaces traditional inheritance patterns with Composition over Inheritance.
- * Automatically handles TopAppBar slots, status bars insets, and theme backgrounds.
+ * Automatically handles TopAppBar slots, status bars insets, FloatingActionButton, and theme backgrounds.
  *
  * @param title Screen title text (ignored if titleSlot is provided)
- * @param titleSlot Optional custom Composable slot for the center title (e.g. Date Capsule)
+ * @param titleSlot Optional custom Composable slot for the center title (e.g. MonthNavigationCapsule)
  * @param navigationIcon Optional navigation icon Composable (e.g. Back button)
  * @param actions Optional action icons on the right of the TopAppBar
+ * @param floatingActionButton Optional floating action button slot
+ * @param snackbarHost Optional snackbar host slot
  * @param modifier Composable modifier
  * @param content Screen body content receiving Scaffold PaddingValues
  */
@@ -34,6 +36,8 @@ fun BaseScreenScaffold(
     titleSlot: (@Composable () -> Unit)? = null,
     navigationIcon: (@Composable () -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    floatingActionButton: (@Composable () -> Unit)? = null,
+    snackbarHost: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -56,11 +60,13 @@ fun BaseScreenScaffold(
                 },
                 navigationIcon = { navigationIcon?.invoke() },
                 actions = actions,
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
                 )
             )
         },
+        floatingActionButton = { floatingActionButton?.invoke() },
+        snackbarHost = { snackbarHost?.invoke() },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         content(paddingValues)
