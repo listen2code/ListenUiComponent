@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,19 +34,19 @@ data class BarChartItem(
 fun BarChart(
     items: List<BarChartItem>,
     modifier: Modifier = Modifier,
-    height: Dp = 140.dp,
+    height: Dp = 136.dp,
     barWidth: Dp = 18.dp,
     trackColor: Color = Color.Gray.copy(alpha = 0.12f)
 ) {
     if (items.isEmpty()) return
 
     val maxValue = items.maxOfOrNull { it.value }?.coerceAtLeast(1.0) ?: 1.0
-    val chartTrackHeight = height - 42.dp // leave room for amount label on top and date label below
+    val chartTrackHeight = (height - 44.dp).coerceAtLeast(36.dp)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(top = 4.dp, bottom = 2.dp)
     ) {
         Row(
             modifier = Modifier
@@ -110,13 +109,14 @@ fun BarChart(
                         }
                     }
 
-                    // Bottom Date Label
+                    // Bottom Date Label (Generous headroom, zero bottom clipping)
                     Text(
                         text = item.label,
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
+                        maxLines = 1,
+                        modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
                     )
                 }
             }
