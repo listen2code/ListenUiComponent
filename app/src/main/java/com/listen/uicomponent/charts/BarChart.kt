@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,29 +33,35 @@ data class BarChartItem(
     val colorHex: String
 )
 
+/**
+ * Clean 7-day trend bar chart with robust spacing and zero text overlap/clipping.
+ *
+ * @param items List of BarChartItem
+ * @param modifier Composable modifier (first optional parameter)
+ * @param trackHeight Height of the background pill track (excluding labels)
+ * @param barWidth Width of each bar
+ * @param trackColor Background track color
+ */
 @Composable
 fun BarChart(
     items: List<BarChartItem>,
     modifier: Modifier = Modifier,
-    height: Dp = 136.dp,
-    barWidth: Dp = 18.dp,
+    trackHeight: Dp = 96.dp,
+    barWidth: Dp = 16.dp,
     trackColor: Color = Color.Gray.copy(alpha = 0.12f)
 ) {
     if (items.isEmpty()) return
 
     val maxValue = items.maxOfOrNull { it.value }?.coerceAtLeast(1.0) ?: 1.0
-    val chartTrackHeight = (height - 44.dp).coerceAtLeast(36.dp)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 2.dp)
+            .padding(vertical = 4.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height),
-            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
             items.forEach { item ->
@@ -62,28 +71,38 @@ fun BarChart(
                     0f
                 }
                 val color = if (item.value > 0) parseHexColor(item.colorHex) else Color.Transparent
-                val activeBarHeight = chartTrackHeight * ratio
+                val activeBarHeight = trackHeight * ratio
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom,
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.weight(1f)
                 ) {
-                    // Top Value Label
-                    Text(
-                        text = if (item.value > 0) "%.0f".format(item.value) else "",
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary,
-                        maxLines = 1,
-                        modifier = Modifier.padding(bottom = 2.dp)
-                    )
+                    // 1. Top Value Label (Dedicated 18.dp height slot, never overlaps)
+                    Box(
+                        modifier = Modifier
+                            .height(18.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        if (item.value > 0) {
+                            Text(
+                                text = "%.0f".format(item.value),
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
 
-                    // Pill Track with Filled Active Bar Inside
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // 2. Bar Track with Filled Value Bar Inside
                     Box(
                         modifier = Modifier
                             .width(barWidth)
-                            .height(chartTrackHeight)
+                            .height(trackHeight)
                             .clip(RoundedCornerShape(barWidth / 2))
                             .background(trackColor),
                         contentAlignment = Alignment.BottomCenter
@@ -97,27 +116,35 @@ fun BarChart(
                                     .background(color)
                             )
                         } else {
-                            // Small subtle dot at bottom for 0 days
+                            // Subtle indicator dot for 0 expenditure
                             Box(
                                 modifier = Modifier
-                                    .width(4.dp)
-                                    .height(4.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f))
-                                    .padding(bottom = 2.dp)
+                                    .padding(bottom = 3.dp)
+                                    .size(3.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f))
                             )
                         }
                     }
 
-                    // Bottom Date Label (Generous headroom, zero bottom clipping)
-                    Text(
-                        text = item.label,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        modifier = Modifier.padding(top = 4.dp, bottom = 2.dp)
-                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // 3. Bottom Date/Weekday Label (Dedicated 20.dp slot, never clipped)
+                    Box(
+                        modifier = Modifier
+                            .height(20.dp)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Text(
+                            text = item.label,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

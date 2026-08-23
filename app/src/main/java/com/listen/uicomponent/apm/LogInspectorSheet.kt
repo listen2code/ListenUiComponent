@@ -61,7 +61,8 @@ fun LogInspectorSheet(
     onClearLogs: () -> Unit,
     onExportLogs: () -> Unit,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    lang: String = "zh"
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedChannel by remember { mutableStateOf<String?>(null) }
@@ -78,6 +79,12 @@ fun LogInspectorSheet(
 
     val channels = listOf("APP", "DB", "SYNC", "CRASH")
 
+    val (titleText, clearText, exportText, placeholderText, emptyText) = when (lang.lowercase()) {
+        "en" -> Tuple5("APM Logs & Observability", "Clear", "Export", "Search TraceId / Tag / Keyword...", "No matching logs found")
+        "ja" -> Tuple5("APM ログと観測性", "消去", "エクスポート", "TraceId / Tag / キーワード検索...", "一致するログはありません")
+        else -> Tuple5("APM 性能与日志", "清空", "导出", "搜索 TraceId / Tag / 关键词...", "暂无匹配日志")
+    }
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -89,7 +96,7 @@ fun LogInspectorSheet(
                 .fillMaxHeight(0.85f)
                 .padding(horizontal = 14.dp, vertical = 2.dp)
         ) {
-            // Header Row with perfectly centered buttons
+            // Header Row with centered buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,7 +105,7 @@ fun LogInspectorSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "APM 性能与日志",
+                    text = titleText,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -112,7 +119,7 @@ fun LogInspectorSheet(
                         modifier = Modifier.height(32.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text("清空", fontSize = 11.sp, fontWeight = FontWeight.Medium)
+                            Text(clearText, fontSize = 11.sp, fontWeight = FontWeight.Medium)
                         }
                     }
                     Button(
@@ -121,13 +128,13 @@ fun LogInspectorSheet(
                         modifier = Modifier.height(32.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Text("导出", fontSize = 11.sp, fontWeight = FontWeight.Medium)
+                            Text(exportText, fontSize = 11.sp, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
             }
 
-            // Horizontally Scrollable Channel Filter Chips (No compression)
+            // Horizontally Scrollable Channel Filter Chips
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -152,11 +159,11 @@ fun LogInspectorSheet(
                 }
             }
 
-            // Search text field directly under chips (No big blank area)
+            // Search text field
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("搜索 TraceId / Tag / 关键词...", fontSize = 11.sp) },
+                placeholder = { Text(placeholderText, fontSize = 11.sp) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -173,7 +180,7 @@ fun LogInspectorSheet(
                         .weight(1f),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("暂无匹配日志", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+                    Text(emptyText, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
                 }
             } else {
                 LazyColumn(
@@ -190,6 +197,8 @@ fun LogInspectorSheet(
         }
     }
 }
+
+private data class Tuple5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E)
 
 @Composable
 private fun LogItemRow(log: LogEntryUi) {
