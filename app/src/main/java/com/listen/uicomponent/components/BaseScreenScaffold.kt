@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
  * Automatically handles TopAppBar slots, status bars insets, FloatingActionButton, and theme backgrounds.
  *
  * @param title Screen title text (ignored if titleSlot is provided)
- * @param titleSlot Optional custom Composable slot for the center title (e.g. MonthNavigationCapsule)
+ * @param titleSlot Optional custom Composable slot for the center title (e.g. date selector or custom header)
  * @param navigationIcon Optional navigation icon Composable (e.g. Back button)
  * @param actions Optional action icons on the right of the TopAppBar
  * @param floatingActionButton Optional floating action button slot

@@ -1,6 +1,5 @@
 package com.listen.uicomponent.apm
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -31,17 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.listen.uicomponent.theme.ExpenseRed
-import com.listen.uicomponent.theme.IncomeGreen
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 data class LogEntryUi(
     val id: String,
@@ -54,6 +44,10 @@ data class LogEntryUi(
     val stackTrace: String? = null
 )
 
+/**
+ * Universal APM Log Inspector Modal Bottom Sheet Component.
+ * Supports channel filtering, keyword searching, log clearing and exporting.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LogInspectorSheet(
@@ -96,7 +90,7 @@ fun LogInspectorSheet(
                 .fillMaxHeight(0.85f)
                 .padding(horizontal = 14.dp, vertical = 2.dp)
         ) {
-            // Header Row with centered buttons
+            // Header Row with title and action buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -193,91 +187,6 @@ fun LogInspectorSheet(
                         LogItemRow(log)
                     }
                 }
-            }
-        }
-    }
-}
-
-private data class Tuple5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E)
-
-@Composable
-private fun LogItemRow(log: LogEntryUi) {
-    val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
-    val timeStr = sdf.format(Date(log.timestamp))
-
-    val levelColor = when (log.levelName) {
-        "DEBUG" -> Color.Gray
-        "INFO" -> IncomeGreen
-        "WARN" -> Color(0xFFF59E0B)
-        "ERROR" -> ExpenseRed
-        else -> MaterialTheme.colorScheme.onSurface
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
-            .padding(6.dp)
-    ) {
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "[${log.channelName}]",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "[${log.levelName}]",
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = levelColor
-                    )
-                    Text(
-                        text = log.tag,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    log.traceId?.let { trace ->
-                        Text(
-                            text = "[$trace]",
-                            fontSize = 9.sp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            fontFamily = FontFamily.Monospace
-                        )
-                    }
-                }
-                Text(
-                    text = timeStr,
-                    fontSize = 9.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = log.message,
-                fontSize = 11.sp,
-                fontFamily = FontFamily.Monospace,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            log.stackTrace?.let { stack ->
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = stack,
-                    fontSize = 9.sp,
-                    color = ExpenseRed,
-                    fontFamily = FontFamily.Monospace,
-                    maxLines = 6
-                )
             }
         }
     }
