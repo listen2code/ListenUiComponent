@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun EmptyStateView(
-    message: String = "No Data Available",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    message: String = "No Data Available"
 ) {
     Box(
         modifier = modifier

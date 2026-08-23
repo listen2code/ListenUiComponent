@@ -32,13 +32,13 @@ import androidx.compose.ui.text.font.FontWeight
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BaseScreenScaffold(
+    modifier: Modifier = Modifier,
     title: String = "",
     titleSlot: (@Composable () -> Unit)? = null,
     navigationIcon: (@Composable () -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     floatingActionButton: (@Composable () -> Unit)? = null,
     snackbarHost: (@Composable () -> Unit)? = null,
-    modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(

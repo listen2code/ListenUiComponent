@@ -40,14 +40,14 @@ data class PieChartItem(
 fun DonutChart(
     items: List<PieChartItem>,
     totalValue: Double,
+    modifier: Modifier = Modifier,
     centerTitle: String = "Total",
     centerValueText: String = "",
-    emptyText: String = "No Data",
-    modifier: Modifier = Modifier
+    emptyText: String = "No Data"
 ) {
     val isEmpty = items.isEmpty() || totalValue <= 0
 
-    val displayValue = centerValueText.ifBlank { String.format("%.2f", totalValue) }
+    val displayValue = centerValueText.ifBlank { "%.2f".format(totalValue) }
     val valueFontSize = when {
         displayValue.length > 13 -> 12.sp
         displayValue.length > 10 -> 14.sp

@@ -28,9 +28,9 @@ fun NumericKeypad(
     onKeyPress: (String) -> Unit,
     onDeletePress: () -> Unit,
     onDonePress: () -> Unit,
+    modifier: Modifier = Modifier,
     doneText: String = "OK",
-    showOperators: Boolean = true,
-    modifier: Modifier = Modifier
+    showOperators: Boolean = true
 ) {
     val keys = if (showOperators) {
         listOf(

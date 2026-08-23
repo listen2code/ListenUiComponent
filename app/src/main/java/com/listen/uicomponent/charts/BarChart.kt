@@ -71,7 +71,7 @@ fun BarChart(
                 ) {
                     // Top Value Label
                     Text(
-                        text = if (item.value > 0) String.format("%.0f", item.value) else "",
+                        text = if (item.value > 0) "%.0f".format(item.value) else "",
                         fontSize = 9.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary,

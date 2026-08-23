@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 fun SearchBarInput(
     query: String,
     onQueryChange: (String) -> Unit,
-    placeholder: String = "Search...",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeholder: String = "Search..."
 ) {
     OutlinedTextField(
         value = query,
