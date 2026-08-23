@@ -14,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 
+/**
+ * Universal Search Input Bar Component across all Listen applications.
+ */
 @Composable
 fun SearchBarInput(
     query: String,
     onQueryChange: (String) -> Unit,
-    placeholder: String = "搜索明细 / 备注...",
+    placeholder: String = "Search...",
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(

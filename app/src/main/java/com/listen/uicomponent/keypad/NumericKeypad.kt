@@ -20,11 +20,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Universal customizable numeric keypad component for numbers, amounts, and calculation inputs.
+ */
 @Composable
 fun NumericKeypad(
     onKeyPress: (String) -> Unit,
     onDeletePress: () -> Unit,
     onDonePress: () -> Unit,
+    doneText: String = "OK",
     showOperators: Boolean = true,
     modifier: Modifier = Modifier
 ) {
@@ -56,9 +60,10 @@ fun NumericKeypad(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 row.forEach { key ->
-                    val weight = if (key == "OK" && !showOperators) 3f else if (key == "0" && !showOperators) 1f else 1f
+                    val weight = if (key == "OK" && !showOperators) 3f else 1f
                     KeypadButton(
                         key = key,
+                        doneText = doneText,
                         modifier = Modifier.weight(weight),
                         onClick = {
                             when (key) {
@@ -77,6 +82,7 @@ fun NumericKeypad(
 @Composable
 private fun KeypadButton(
     key: String,
+    doneText: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -99,7 +105,7 @@ private fun KeypadButton(
 
     val labelText = when (key) {
         "DEL" -> "⌫"
-        "OK" -> "完成记账 ✓"
+        "OK" -> doneText
         else -> key
     }
 
@@ -113,7 +119,7 @@ private fun KeypadButton(
     ) {
         Text(
             text = labelText,
-            fontSize = if (key == "OK") 16.sp else if (key == "DEL") 22.sp else 20.sp,
+            fontSize = if (key == "OK") 15.sp else if (key == "DEL") 22.sp else 20.sp,
             fontWeight = FontWeight.Bold,
             color = contentColor
         )
