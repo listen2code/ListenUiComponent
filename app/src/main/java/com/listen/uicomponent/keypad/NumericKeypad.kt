@@ -21,7 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Universal customizable numeric keypad component for numbers, amounts, and calculation inputs.
+ * Clean 4x3 Numeric Keypad Component (Option A).
+ * Provides large touch targets for numbers 0-9, decimal point, and backspace,
+ * paired with a prominent full-width Done/Save action button.
+ *
+ * @param onKeyPress Callback when a digit or dot is pressed
+ * @param onDeletePress Callback when backspace is pressed
+ * @param onDonePress Callback when Done/Save is pressed
+ * @param modifier Composable modifier (first optional parameter)
+ * @param doneText Label for the primary action button
  */
 @Composable
 fun NumericKeypad(
@@ -29,52 +37,59 @@ fun NumericKeypad(
     onDeletePress: () -> Unit,
     onDonePress: () -> Unit,
     modifier: Modifier = Modifier,
-    doneText: String = "OK",
-    showOperators: Boolean = true
+    doneText: String = "OK"
 ) {
-    val keys = if (showOperators) {
-        listOf(
-            listOf("7", "8", "9", "+"),
-            listOf("4", "5", "6", "-"),
-            listOf("1", "2", "3", "DEL"),
-            listOf(".", "0", "00", "OK")
-        )
-    } else {
-        listOf(
-            listOf("7", "8", "9", "DEL"),
-            listOf("4", "5", "6", "00"),
-            listOf("1", "2", "3", "."),
-            listOf("0", "OK")
-        )
-    }
+    val numberRows = listOf(
+        listOf("1", "2", "3"),
+        listOf("4", "5", "6"),
+        listOf("7", "8", "9"),
+        listOf(".", "0", "DEL")
+    )
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        keys.forEach { row ->
+        // 4x3 Number Grid
+        numberRows.forEach { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 row.forEach { key ->
-                    val weight = if (key == "OK" && !showOperators) 3f else 1f
                     KeypadButton(
                         key = key,
-                        doneText = doneText,
-                        modifier = Modifier.weight(weight),
+                        modifier = Modifier.weight(1f),
                         onClick = {
-                            when (key) {
-                                "DEL" -> onDeletePress()
-                                "OK" -> onDonePress()
-                                else -> onKeyPress(key)
+                            if (key == "DEL") {
+                                onDeletePress()
+                            } else {
+                                onKeyPress(key)
                             }
                         }
                     )
                 }
             }
+        }
+
+        // Full-width Primary Done Action Button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable(onClick = onDonePress),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = doneText,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }
@@ -82,36 +97,28 @@ fun NumericKeypad(
 @Composable
 private fun KeypadButton(
     key: String,
-    doneText: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isPrimaryAction = key == "OK"
-    val isOperator = key == "+" || key == "-"
-    val isSpecial = key == "DEL"
+    val isDelete = key == "DEL"
 
-    val containerColor = when {
-        isPrimaryAction -> MaterialTheme.colorScheme.primary
-        isOperator -> MaterialTheme.colorScheme.primaryContainer
-        isSpecial -> MaterialTheme.colorScheme.surfaceVariant
-        else -> MaterialTheme.colorScheme.surface
+    val containerColor = if (isDelete) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.surface
     }
 
-    val contentColor = when {
-        isPrimaryAction -> MaterialTheme.colorScheme.onPrimary
-        isOperator -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.onSurface
+    val contentColor = if (isDelete) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        MaterialTheme.colorScheme.onSurface
     }
 
-    val labelText = when (key) {
-        "DEL" -> "⌫"
-        "OK" -> doneText
-        else -> key
-    }
+    val labelText = if (isDelete) "⌫" else key
 
     Box(
         modifier = modifier
-            .height(52.dp)
+            .height(48.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(containerColor)
             .clickable(onClick = onClick),
@@ -119,8 +126,8 @@ private fun KeypadButton(
     ) {
         Text(
             text = labelText,
-            fontSize = if (key == "OK") 15.sp else if (key == "DEL") 22.sp else 20.sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = if (isDelete) 22.sp else 20.sp,
+            fontWeight = FontWeight.SemiBold,
             color = contentColor
         )
     }
