@@ -43,4 +43,16 @@ class ChartsModelTest {
         assertEquals("#10B981", segment.colorHex)
         assertEquals(0.35f, segment.percentage)
     }
+
+    @Test
+    fun testLineChartPointData() {
+        val point = com.listen.uicomponent.charts.LineChartPoint(
+            label = "15",
+            value = 350.0,
+            subLabel = "08-15"
+        )
+        assertEquals("15", point.label)
+        assertEquals(350.0, point.value, 0.001)
+        assertEquals("08-15", point.subLabel)
+    }
 }
