@@ -38,13 +38,20 @@
 | **`CommonError`** | 异常与重试缺省页 | 统一网络/加载异常图文、居中排版与“点击重试”操作按钮。 |
 | **`CommonList`** | 多状态列表容器 | 自动集成 Loading (骨架屏) -> Empty -> Error -> Content 四态切换与 LazyColumn 渲染。 |
 | **`CommonDivider`** | 极细分割线 | 统一 0.5.dp 细线条、透明度与左右自定义缩进 (`startIndent`, `endIndent`)。 |
+| **`BaseScreenScaffold`** | 通用页面脚手架 | 统一标准顶部栏 (TopBar)、内容区域与底部导航栏布局容器，内置系统栏适配与标准化页面结构。 |
+| **`EmptyStateView`** | 增强空状态视图 | 基于 `CommonEmpty` 的增强版空状态组件，提供更丰富的自定义插槽与动画支持。 |
+| **`IconBadge`** | 图标徽标 | 带状态圆点或数字角标的图标组件，适用于通知、消息未读等场景。 |
+| **`LoadingView`** | 增强加载视图 | 基于 `CommonLoading` 的增强版加载组件，提供更多样化的加载状态展示。 |
+| **`SearchBarInput`** | 通用搜索输入框 | 标准搜索栏组件，内置搜索图标、输入框与清空按钮，支持查询回调与键盘交互。 |
+| **`SegmentedProgressBar`** | 分段比例进度条 | 多段式彩色进度条，支持自定义段数、颜色与比例，适用于分类占比与预算进度展示。 |
+| **`SurfaceCard`** | 通用卡片容器 | 统一 Surface 卡片包装器，支持精准 `cornerRadius` 与 `contentPadding` 几何对齐。 |
 
 ---
 
 ### 2. 交互键盘与可视化图表
 
 - **`keypad/` (通用交互键盘)**：
-  - `NumericKeypad.kt`：可高度定制确认文案 (`doneText`) 的通用数字计算键盘（支持算术运算符、退格与长按清空）。
+  - `NumericKeypad.kt`：可高度定制确认文案 (`doneText`) 的通用数字输入键盘（4x3 标准布局：0-9 数字、小数点与退格）。
 - **`charts/` (通用 Canvas 数据可视化图表)**：
   - `DonutChart.kt`：通用 Canvas 环形占比图（支持中空指标文本、动态扇区绘制与平滑动画）。
   - `BarChart.kt`：通用 Canvas 垂直柱状走势图（X 轴防遮挡对齐、极值标注与负荷高亮）。
