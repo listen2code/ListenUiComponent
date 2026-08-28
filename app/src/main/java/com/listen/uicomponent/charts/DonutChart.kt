@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -55,6 +56,15 @@ fun DonutChart(
         else -> 19.sp
     }
 
+    val animationProgress by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = if (isEmpty) 0f else 1f,
+        animationSpec = androidx.compose.animation.core.tween(
+            durationMillis = 650,
+            easing = androidx.compose.animation.core.FastOutSlowInEasing
+        ),
+        label = "DonutChartSweep"
+    )
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -79,21 +89,27 @@ fun DonutChart(
                 )
             } else {
                 var startAngle = -90f
+                val currentMaxAngle = 360f * animationProgress
+                var accumulatedAngle = 0f
+
                 items.forEach { item ->
-                    val sweepAngle = item.percentage * 360f
-                    val color = parseHexColor(item.colorHex)
+                    val fullSweep = item.percentage * 360f
+                    if (accumulatedAngle < currentMaxAngle) {
+                        val sweep = (currentMaxAngle - accumulatedAngle).coerceAtMost(fullSweep)
+                        val color = parseHexColor(item.colorHex)
 
-                    drawArc(
-                        color = color,
-                        startAngle = startAngle,
-                        sweepAngle = sweepAngle,
-                        useCenter = false,
-                        style = Stroke(width = strokeWidth),
-                        size = arcSize,
-                        topLeft = topLeftOffset
-                    )
-
-                    startAngle += sweepAngle
+                        drawArc(
+                            color = color,
+                            startAngle = startAngle,
+                            sweepAngle = sweep,
+                            useCenter = false,
+                            style = Stroke(width = strokeWidth),
+                            size = arcSize,
+                            topLeft = topLeftOffset
+                        )
+                    }
+                    startAngle += fullSweep
+                    accumulatedAngle += fullSweep
                 }
             }
         }

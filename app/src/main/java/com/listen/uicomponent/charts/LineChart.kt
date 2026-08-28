@@ -1,4 +1,4 @@
-﻿package com.listen.uicomponent.charts
+package com.listen.uicomponent.charts
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +70,15 @@ fun LineChart(
     val primaryColor = MaterialTheme.colorScheme.primary
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f)
 
+    val animationProgress by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = androidx.compose.animation.core.tween(
+            durationMillis = 600,
+            easing = androidx.compose.animation.core.FastOutSlowInEasing
+        ),
+        label = "LineChartDraw"
+    )
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -118,7 +128,8 @@ fun LineChart(
             val availableHeight = height - topPadding - bottomPadding
 
             if (points.size == 1) {
-                val y = topPadding + availableHeight * (1f - (points[0].value / maxValue).toFloat().coerceIn(0f, 1f))
+                val ratio = ((points[0].value / maxValue) * animationProgress).toFloat().coerceIn(0f, 1f)
+                val y = topPadding + availableHeight * (1f - ratio)
                 drawCircle(
                     color = primaryColor,
                     radius = 4.dp.toPx(),
@@ -129,7 +140,7 @@ fun LineChart(
 
             val stepX = width / (points.size - 1).coerceAtLeast(1)
             val coordinates = points.mapIndexed { index, point ->
-                val ratio = (point.value / maxValue).toFloat().coerceIn(0f, 1f)
+                val ratio = ((point.value / maxValue) * animationProgress).toFloat().coerceIn(0f, 1f)
                 val x = index * stepX
                 val y = topPadding + availableHeight * (1f - ratio)
                 Offset(x, y)

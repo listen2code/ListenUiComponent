@@ -39,6 +39,8 @@ fun NumericKeypad(
     modifier: Modifier = Modifier,
     doneText: String = "OK"
 ) {
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
+
     val numberRows = listOf(
         listOf("1", "2", "3"),
         listOf("4", "5", "6"),
@@ -63,6 +65,7 @@ fun NumericKeypad(
                         key = key,
                         modifier = Modifier.weight(1f),
                         onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
                             if (key == "DEL") {
                                 onDeletePress()
                             } else {
@@ -81,7 +84,10 @@ fun NumericKeypad(
                 .height(48.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.primary)
-                .clickable(onClick = onDonePress),
+                .clickable(onClick = {
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    onDonePress()
+                }),
             contentAlignment = Alignment.Center
         ) {
             Text(
