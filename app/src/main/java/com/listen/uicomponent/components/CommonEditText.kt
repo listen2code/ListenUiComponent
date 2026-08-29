@@ -1,6 +1,10 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -8,12 +12,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -53,31 +64,88 @@ fun CommonEditText(
     errorMessage: String? = null,
     singleLine: Boolean = true,
     maxLines: Int = if (singleLine) 1 else 4,
+    readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     cornerRadius: Dp = 12.dp
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    val unifiedTextStyle = LocalTextStyle.current.copy(
+        fontSize = 16.sp,
+        lineHeight = 24.sp
+    )
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.fillMaxWidth(),
+        readOnly = readOnly,
+        textStyle = unifiedTextStyle,
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (singleLine && (!isError || errorMessage == null)) {
+                    Modifier.height(56.dp)
+                } else {
+                    Modifier.heightIn(min = 56.dp)
+                }
+            )
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                if (readOnly && focusState.isFocused) {
+                    keyboardController?.hide()
+                }
+            },
         label = label?.let { { Text(it, fontSize = 13.sp) } },
-        placeholder = placeholder?.let { { Text(it, fontSize = 13.sp) } },
-        leadingIcon = leadingIcon,
-        trailingIcon = {
-            if (trailingIcon != null) {
-                trailingIcon()
-            } else if (showClearButton && value.isNotEmpty()) {
-                IconButton(onClick = { onValueChange("") }) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+        placeholder = placeholder?.let {
+            {
+                Text(
+                    text = it,
+                    style = unifiedTextStyle,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.45f)
+                )
+            }
+        },
+        leadingIcon = leadingIcon?.let { icon ->
+            {
+                Box(
+                    modifier = Modifier.size(48.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    icon()
                 }
             }
         },
+        trailingIcon = if (trailingIcon != null || showClearButton) {
+            {
+                if (trailingIcon != null) {
+                    trailingIcon()
+                } else if (showClearButton) {
+                    Box(
+                        modifier = Modifier.size(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (value.isNotEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    onValueChange("")
+                                    focusRequester.requestFocus()
+                                },
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        } else null,
         isError = isError,
         supportingText = if (isError && errorMessage != null) {
             { Text(errorMessage, color = MaterialTheme.colorScheme.error, fontSize = 11.sp) }
