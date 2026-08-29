@@ -20,7 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,11 +63,19 @@ fun BarChart(
 
     val maxValue = items.maxOfOrNull { it.value }?.coerceAtLeast(1.0) ?: 1.0
 
-    val animProgress = remember { Animatable(0f) }
-    LaunchedEffect(items) {
+    val dataSignature = remember(items) {
+        items.hashCode().toString()
+    }
+    var animatedSignature by rememberSaveable { mutableStateOf("") }
+    val animProgress = remember {
+        Animatable(if (animatedSignature == dataSignature && items.isNotEmpty()) 1f else 0f)
+    }
+
+    LaunchedEffect(dataSignature) {
         if (items.isEmpty()) {
             animProgress.snapTo(0f)
-        } else {
+        } else if (animatedSignature != dataSignature) {
+            animatedSignature = dataSignature
             animProgress.snapTo(0f)
             animProgress.animateTo(
                 targetValue = 1f,

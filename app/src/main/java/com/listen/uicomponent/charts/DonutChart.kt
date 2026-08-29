@@ -17,7 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -61,11 +64,19 @@ fun DonutChart(
         else -> 19.sp
     }
 
-    val animatableProgress = remember { Animatable(0f) }
-    LaunchedEffect(items, totalValue) {
+    val dataSignature = remember(items, totalValue) {
+        "${items.hashCode()}_${totalValue}"
+    }
+    var animatedSignature by rememberSaveable { mutableStateOf("") }
+    val animatableProgress = remember {
+        Animatable(if (animatedSignature == dataSignature && !isEmpty) 1f else 0f)
+    }
+
+    LaunchedEffect(dataSignature) {
         if (isEmpty) {
             animatableProgress.snapTo(0f)
-        } else {
+        } else if (animatedSignature != dataSignature) {
+            animatedSignature = dataSignature
             animatableProgress.snapTo(0f)
             animatableProgress.animateTo(
                 targetValue = 1f,
