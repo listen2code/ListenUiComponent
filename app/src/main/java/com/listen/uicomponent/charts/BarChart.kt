@@ -63,14 +63,18 @@ fun BarChart(
 
     val maxValue = items.maxOfOrNull { it.value }?.coerceAtLeast(1.0) ?: 1.0
 
+    // Unique data fingerprint calculated from current bar items list
     val dataSignature = remember(items) {
         items.hashCode().toString()
     }
+    // Preserves the last animated signature across LazyColumn scroll recycling
     var animatedSignature by rememberSaveable { mutableStateOf("") }
+    // Initialize directly to 1f if this data was already animated to avoid scroll re-trigger
     val animProgress = remember {
         Animatable(if (animatedSignature == dataSignature && items.isNotEmpty()) 1f else 0f)
     }
 
+    // Only trigger bar growth animation when items dataset actually changes
     LaunchedEffect(dataSignature) {
         if (items.isEmpty()) {
             animProgress.snapTo(0f)

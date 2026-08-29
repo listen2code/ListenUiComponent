@@ -80,14 +80,18 @@ fun LineChart(
     val primaryColor = MaterialTheme.colorScheme.primary
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f)
 
+    // Unique data fingerprint calculated from current trend points
     val dataSignature = remember(points) {
         points.hashCode().toString()
     }
+    // Preserves the last animated signature across LazyColumn scroll recycling
     var animatedSignature by rememberSaveable { mutableStateOf("") }
+    // Initialize directly to 1f if this data was already animated to avoid scroll re-trigger
     val animProgress = remember {
         Animatable(if (animatedSignature == dataSignature && points.isNotEmpty()) 1f else 0f)
     }
 
+    // Only trigger curve rise animation when points dataset actually updates
     LaunchedEffect(dataSignature) {
         if (points.isEmpty()) {
             animProgress.snapTo(0f)

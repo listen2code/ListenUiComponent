@@ -64,14 +64,18 @@ fun DonutChart(
         else -> 19.sp
     }
 
+    // Unique data fingerprint that changes only when items or totalValue change
     val dataSignature = remember(items, totalValue) {
         "${items.hashCode()}_${totalValue}"
     }
+    // Preserves the last animated signature across LazyColumn scroll recycling
     var animatedSignature by rememberSaveable { mutableStateOf("") }
+    // Initialize directly to 1f if this data was already animated to avoid scroll re-trigger
     val animatableProgress = remember {
         Animatable(if (animatedSignature == dataSignature && !isEmpty) 1f else 0f)
     }
 
+    // Only trigger entry sweep animation when actual data contents change
     LaunchedEffect(dataSignature) {
         if (isEmpty) {
             animatableProgress.snapTo(0f)

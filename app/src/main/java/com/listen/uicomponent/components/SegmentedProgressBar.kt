@@ -36,14 +36,18 @@ fun SegmentedProgressBar(
     height: Dp = 10.dp,
     trackColor: Color = Color.LightGray.copy(alpha = 0.25f)
 ) {
+    // Unique data fingerprint calculated from the current segments list
     val dataSignature = remember(segments) {
         segments.hashCode().toString()
     }
+    // Preserves the last animated signature across LazyColumn scroll recycling
     var animatedSignature by rememberSaveable { mutableStateOf("") }
+    // Initialize directly to 1f if this data was already animated to avoid scroll re-trigger
     val animProgress = remember {
         Animatable(if (animatedSignature == dataSignature && segments.isNotEmpty()) 1f else 0f)
     }
 
+    // Only trigger expand animation when segment data actually changes
     LaunchedEffect(dataSignature) {
         if (segments.isEmpty()) {
             animProgress.snapTo(0f)
