@@ -61,7 +61,10 @@ fun LineChart(
     modifier: Modifier = Modifier,
     chartHeight: Dp = 120.dp,
     lineColor: Color = MaterialTheme.colorScheme.primary,
-    showFill: Boolean = true
+    showFill: Boolean = true,
+    currencySymbol: String = "",
+    maxLabel: String? = null,
+    totalLabel: String? = null
 ) {
     if (points.isEmpty()) return
 
@@ -102,14 +105,14 @@ fun LineChart(
                         .background(primaryColor, CircleShape)
                 )
                 Text(
-                    text = "%.2f".format(totalExpenseSum),
+                    text = totalLabel ?: "${currencySymbol}${"%.2f".format(totalExpenseSum)}",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
             Text(
-                text = "Max: %.0f".format(maxValue),
+                text = maxLabel ?: "Max: ${currencySymbol}${"%.0f".format(maxValue)}",
                 fontSize = 11.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
