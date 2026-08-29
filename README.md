@@ -53,9 +53,12 @@
 - **`keypad/` (通用交互键盘)**：
   - `NumericKeypad.kt`：可高度定制确认文案 (`doneText`) 的通用数字输入键盘（4x3 标准布局：0-9 数字、小数点与退格）。
 - **`charts/` (通用 Canvas 数据可视化图表)**：
-  - `DonutChart.kt`：通用 Canvas 环形占比图（支持中空指标文本、动态扇区绘制与平滑动画）。
+  - `DonutChart.kt`：通用 Canvas 环形占比图（支持中空指标文本、动态扇区扫掠动效、交互扇区点击高亮与外部双向联动）。
+  - `DonutChartTooltip.kt`：环形图动态悬浮气泡框（按圆弧中心法向自动计算锚点弹出）。
   - `BarChart.kt`：通用 Canvas 垂直柱状走势图（X 轴防遮挡对齐、极值标注与负荷高亮）。
-  - `LineChart.kt`：通用 Canvas 折线平滑走势图。
+  - `LineChart.kt`：通用 Canvas 折线平滑走势图（`detectDragGesturesAfterLongPress` 长按拖拽手势、竖直引导虚线、高亮点、右上角微胶囊徽章与峰值一键联动）。
+  - `LineChartTooltip.kt`：折线图拖拽数据悬浮气泡框（展示日期、金额与交互跳转指引）。
+  - `LineChartXAxisLabels.kt`：X 轴时间刻度渲染组件（基于自定义 Compose `Layout` 实现 Canvas 坐标像素级对齐与密集刻度展示）。
 
 ---
 
