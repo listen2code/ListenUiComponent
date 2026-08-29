@@ -1,9 +1,11 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -34,7 +36,9 @@ fun SegmentedProgressBar(
     segments: List<ProgressSegment>,
     modifier: Modifier = Modifier,
     height: Dp = 10.dp,
-    trackColor: Color = Color.LightGray.copy(alpha = 0.25f)
+    highlightColorHex: String? = null,
+    trackColor: Color = Color.LightGray.copy(alpha = 0.25f),
+    onSegmentClick: ((ProgressSegment) -> Unit)? = null
 ) {
     // Unique data fingerprint calculated from the current segments list
     val dataSignature = remember(segments) {
@@ -78,11 +82,29 @@ fun SegmentedProgressBar(
                 .clip(RoundedCornerShape(height / 2))
         ) {
             segments.filter { it.percentage > 0f }.forEach { seg ->
+                val isHighlighted = highlightColorHex != null && seg.colorHex.equals(highlightColorHex, ignoreCase = true)
+                val baseColor = parseHexColor(seg.colorHex)
+                val targetColor = when {
+                    highlightColorHex == null -> baseColor
+                    isHighlighted -> baseColor
+                    else -> baseColor.copy(alpha = 0.25f)
+                }
+                val animatedColor by animateColorAsState(
+                    targetValue = targetColor,
+                    animationSpec = tween(durationMillis = 250),
+                    label = "SegmentHighlightAnim"
+                )
+
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(seg.percentage.coerceAtLeast(0.001f))
-                        .background(parseHexColor(seg.colorHex))
+                        .then(
+                            if (onSegmentClick != null) {
+                                Modifier.clickable { onSegmentClick(seg) }
+                            } else Modifier
+                        )
+                        .background(animatedColor)
                 )
             }
         }
