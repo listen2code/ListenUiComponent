@@ -1,5 +1,8 @@
 package com.listen.uicomponent.charts
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +59,22 @@ fun BarChart(
 
     val maxValue = items.maxOfOrNull { it.value }?.coerceAtLeast(1.0) ?: 1.0
 
+    val animProgress = remember { Animatable(0f) }
+    LaunchedEffect(items) {
+        if (items.isEmpty()) {
+            animProgress.snapTo(0f)
+        } else {
+            animProgress.snapTo(0f)
+            animProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 650,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -71,7 +92,7 @@ fun BarChart(
                     0f
                 }
                 val color = if (item.value > 0) parseHexColor(item.colorHex) else Color.Transparent
-                val activeBarHeight = trackHeight * ratio
+                val activeBarHeight = trackHeight * ratio * animProgress.value
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

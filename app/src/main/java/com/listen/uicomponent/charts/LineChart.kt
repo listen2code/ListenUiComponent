@@ -1,5 +1,8 @@
 package com.listen.uicomponent.charts
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -73,14 +77,22 @@ fun LineChart(
     val primaryColor = MaterialTheme.colorScheme.primary
     val gridColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f)
 
-    val animationProgress by androidx.compose.animation.core.animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = androidx.compose.animation.core.tween(
-            durationMillis = 600,
-            easing = androidx.compose.animation.core.FastOutSlowInEasing
-        ),
-        label = "LineChartDraw"
-    )
+    val animProgress = remember { Animatable(0f) }
+    LaunchedEffect(points) {
+        if (points.isEmpty()) {
+            animProgress.snapTo(0f)
+        } else {
+            animProgress.snapTo(0f)
+            animProgress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 700,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        }
+    }
+    val animationProgress = animProgress.value
 
     Column(
         modifier = modifier
