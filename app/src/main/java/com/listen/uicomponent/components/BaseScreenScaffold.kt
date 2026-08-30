@@ -2,6 +2,7 @@ package com.listen.uicomponent.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -67,6 +68,7 @@ fun BaseScreenScaffold(
         },
         floatingActionButton = { floatingActionButton?.invoke() },
         snackbarHost = { snackbarHost?.invoke() },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         content(paddingValues)
