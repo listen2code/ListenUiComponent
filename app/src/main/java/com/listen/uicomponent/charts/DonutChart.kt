@@ -221,7 +221,10 @@ fun DonutChart(
             var targetMid: Float? = null
             for (it in items) {
                 val sweep = it.percentage * 360f
-                if (it == selected) { targetMid = start + sweep / 2f; break }
+                if (it == selected) {
+                    targetMid = start + sweep / 2f
+                    break
+                }
                 start += sweep
             }
             targetMid?.let { midDeg ->

@@ -201,7 +201,9 @@ fun LineChart(
                             val cx = (coordinates[i - 1].x + coordinates[i].x) / 2f
                             cubicTo(cx, coordinates[i - 1].y, cx, coordinates[i].y, coordinates[i].x, coordinates[i].y)
                         }
-                        lineTo(width, height); lineTo(0f, height); close()
+                        lineTo(width, height)
+                        lineTo(0f, height)
+                        close()
                     }
                     drawPath(
                         fillPath,
