@@ -37,7 +37,9 @@ fun NumericKeypad(
     onDeletePress: () -> Unit,
     onDonePress: () -> Unit,
     modifier: Modifier = Modifier,
-    doneText: String = "OK"
+    doneText: String = "OK",
+    onContinuePress: (() -> Unit)? = null,
+    continueText: String? = null
 ) {
     val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
 
@@ -77,25 +79,72 @@ fun NumericKeypad(
             }
         }
 
-        // Full-width Primary Done Action Button
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.primary)
-                .clickable(onClick = {
-                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                    onDonePress()
-                }),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = doneText,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+        // Action Area: Single Done button or Split Done & Continue buttons
+        if (onContinuePress != null && continueText != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                        .clickable(onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            onDonePress()
+                        }),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = doneText,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable(onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            onContinuePress()
+                        }),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = continueText,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable(onClick = {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onDonePress()
+                    }),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = doneText,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
     }
 }
