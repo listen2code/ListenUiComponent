@@ -4,22 +4,14 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,9 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -39,10 +29,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 /**
@@ -104,44 +92,19 @@ fun LineChart(
             .padding(vertical = 4.dp)
     ) {
         // Top Info Row: Total & Max
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .background(primaryColor, CircleShape)
-                )
-                val totalStr = if (hideAmount) "••••" else "${currencySymbol}${"%.2f".format(totalExpenseSum)}"
-                Text(totalLabel ?: totalStr, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            }
-            val maxIdx = remember(points) { points.indices.maxByOrNull { points[it].value } }
-            val maxStr = if (hideAmount) "Max: ••••" else (maxLabel ?: "Max: ${currencySymbol}${"%.0f".format(maxValue)}")
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(primaryColor.copy(alpha = 0.09f))
-                    .then(
-                        if (maxIdx != null && (points[maxIdx].value > 0 || points.size == 1)) {
-                            Modifier.clickable {
-                                val target = if (currentSelectedIndex == maxIdx) null else maxIdx
-                                if (onSelectedIndexChange != null) onSelectedIndexChange(target) else internalSelectedIndex = target
-                            }
-                        } else Modifier
-                    )
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-            ) {
-                Text(maxStr, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = primaryColor)
-            }
-        }
+        LineChartHeader(
+            totalLabel = totalLabel,
+            totalExpenseSum = totalExpenseSum,
+            maxValue = maxValue,
+            maxLabel = maxLabel,
+            currencySymbol = currencySymbol,
+            hideAmount = hideAmount,
+            primaryColor = primaryColor,
+            points = points,
+            currentSelectedIndex = currentSelectedIndex,
+            onSelectedIndexChange = onSelectedIndexChange,
+            onInternalIndexChange = { internalSelectedIndex = it }
+        )
 
         var activeCoordinates by remember { mutableStateOf<List<Offset>>(emptyList()) }
 
@@ -155,15 +118,30 @@ fun LineChart(
                     .matchParentSize()
                     .pointerInput(points) {
                         val step = (points.size - 1).coerceAtLeast(1)
+                        var lastDragIdx: Int? = null
                         detectDragGesturesAfterLongPress(
                             onDragStart = { offset ->
                                 val idx = (offset.x / (size.width / step)).roundToInt().coerceIn(0, points.size - 1)
+                                lastDragIdx = idx
                                 if (onSelectedIndexChange != null) onSelectedIndexChange(idx) else internalSelectedIndex = idx
                             },
                             onDrag = { change, _ ->
                                 change.consume()
                                 val idx = (change.position.x / (size.width / step)).roundToInt().coerceIn(0, points.size - 1)
+                                lastDragIdx = idx
                                 if (onSelectedIndexChange != null) onSelectedIndexChange(idx) else internalSelectedIndex = idx
+                            },
+                            onDragEnd = {
+                                val idx = lastDragIdx
+                                if (idx == null || (points.getOrNull(idx)?.value ?: 0.0) <= 0.0) {
+                                    if (onSelectedIndexChange != null) onSelectedIndexChange(null) else internalSelectedIndex = null
+                                }
+                            },
+                            onDragCancel = {
+                                val idx = lastDragIdx
+                                if (idx == null || (points.getOrNull(idx)?.value ?: 0.0) <= 0.0) {
+                                    if (onSelectedIndexChange != null) onSelectedIndexChange(null) else internalSelectedIndex = null
+                                }
                             }
                         )
                     }
@@ -245,14 +223,17 @@ fun LineChart(
                 }
             }
 
-            // Floating Tooltip over active point
+            // Floating Tooltip over active point (only shown when amount > 0)
             if (currentSelectedIndex != null && currentSelectedIndex in points.indices && currentSelectedIndex in activeCoordinates.indices) {
-                LineChartTooltip(
-                    point = points[currentSelectedIndex], coord = activeCoordinates[currentSelectedIndex],
-                    currencySymbol = currencySymbol, lineColor = primaryColor, hideAmount = hideAmount,
-                    onDismissRequest = { if (onSelectedIndexChange != null) onSelectedIndexChange(null) else internalSelectedIndex = null },
-                    onTooltipClick = onTooltipClick
-                )
+                val currentPoint = points[currentSelectedIndex]
+                if (currentPoint.value > 0) {
+                    LineChartTooltip(
+                        point = currentPoint, coord = activeCoordinates[currentSelectedIndex],
+                        currencySymbol = currencySymbol, lineColor = primaryColor, hideAmount = hideAmount,
+                        onDismissRequest = { if (onSelectedIndexChange != null) onSelectedIndexChange(null) else internalSelectedIndex = null },
+                        onTooltipClick = onTooltipClick
+                    )
+                }
             }
         }
 
