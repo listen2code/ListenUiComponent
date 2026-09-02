@@ -86,7 +86,7 @@ fun CommonEditText(
             .fillMaxWidth()
             .then(
                 if (singleLine && (!isError || errorMessage == null)) {
-                    Modifier.height(56.dp)
+                    if (label != null) Modifier.heightIn(min = 64.dp) else Modifier.height(56.dp)
                 } else {
                     Modifier.heightIn(min = 56.dp)
                 }
