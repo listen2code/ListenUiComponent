@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.sp
  * @param keyboardActions Keyboard actions
  * @param visualTransformation Visual transformation (e.g. password masking)
  * @param cornerRadius Field corner radius
+ * @param maxDecimalPlaces Maximum decimal places allowed (defaults to 2 if keyboardType is Decimal, otherwise null). Set explicitly to customize or null to disable.
  */
 @Composable
 fun CommonEditText(
@@ -68,7 +70,8 @@ fun CommonEditText(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    cornerRadius: Dp = 12.dp
+    cornerRadius: Dp = 12.dp,
+    maxDecimalPlaces: Int? = if (keyboardOptions.keyboardType == KeyboardType.Decimal) 2 else null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -77,9 +80,31 @@ fun CommonEditText(
         lineHeight = 24.sp
     )
 
+    val handleValueChange: (String) -> Unit = { newText ->
+        if (maxDecimalPlaces != null) {
+            val filtered = newText.filter { it.isDigit() || it == '.' }
+            val dotCount = filtered.count { it == '.' }
+            if (dotCount <= 1) {
+                val dotIndex = filtered.indexOf('.')
+                val isValidDecimals = if (dotIndex == -1) {
+                    true
+                } else if (maxDecimalPlaces == 0) {
+                    false
+                } else {
+                    filtered.length - 1 - dotIndex <= maxDecimalPlaces
+                }
+                if (isValidDecimals) {
+                    onValueChange(filtered)
+                }
+            }
+        } else {
+            onValueChange(newText)
+        }
+    }
+
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = handleValueChange,
         readOnly = readOnly,
         textStyle = unifiedTextStyle,
         modifier = modifier
