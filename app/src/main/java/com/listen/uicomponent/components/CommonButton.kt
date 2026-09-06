@@ -1,5 +1,6 @@
 package com.listen.uicomponent.components
 
+import android.os.SystemClock
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,12 +48,14 @@ enum class CommonButtonStyle {
 
 /**
  * Universal Button component with auto-scaling single-line text to prevent unexpected line wrapping.
+ * Includes built-in debounce/throttling to prevent duplicate triggers from rapid accidental clicks.
  *
  * @param text Button label text
  * @param onClick Click callback
  * @param modifier Composable modifier (first optional parameter)
  * @param enabled Whether the button is enabled
  * @param style Visual style variant
+ * @param debounceIntervalMs 防重复点击的限制间隔时间（毫秒，默认 500ms；<= 0 时不限制）
  * @param icon Optional leading icon
  * @param cornerRadius Button corner radius
  * @param contentPadding Inner padding values
@@ -63,10 +67,24 @@ fun CommonButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     style: CommonButtonStyle = CommonButtonStyle.Primary,
+    debounceIntervalMs: Long = 500L,
     icon: (@Composable () -> Unit)? = null,
     cornerRadius: Dp = 10.dp,
     contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
 ) {
+    // [Fix/Feature] 防连击保护：避免用户快速连续点击（例如手抖、网络未响应时的狂点）导致多次提交、重复弹窗或并发请求。
+    // 使用 SystemClock.uptimeMillis() 单调递增时钟进行时间差判断，若距离上次触发未达到指定毫秒阈值则拦截此次点击。
+    var lastClickTime by remember { mutableLongStateOf(0L) }
+    val debouncedOnClick: () -> Unit = remember(onClick, debounceIntervalMs) {
+        {
+            val currentTime = SystemClock.uptimeMillis()
+            if (debounceIntervalMs <= 0L || currentTime - lastClickTime >= debounceIntervalMs) {
+                lastClickTime = currentTime
+                onClick()
+            }
+        }
+    }
+
     val shape = RoundedCornerShape(cornerRadius)
 
     val colors = when (style) {
@@ -107,7 +125,7 @@ fun CommonButton(
     when (style) {
         CommonButtonStyle.Outlined -> {
             OutlinedButton(
-                onClick = onClick,
+                onClick = debouncedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
@@ -118,7 +136,7 @@ fun CommonButton(
         }
         CommonButtonStyle.Text -> {
             TextButton(
-                onClick = onClick,
+                onClick = debouncedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
@@ -129,7 +147,7 @@ fun CommonButton(
         }
         else -> {
             Button(
-                onClick = onClick,
+                onClick = debouncedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
@@ -142,55 +160,14 @@ fun CommonButton(
     }
 }
 
-/**
- * Text component that automatically downscales its font size to fit within single line bounds without wrapping.
- */
-@Composable
-fun AutoResizeText(
-    text: String,
-    modifier: Modifier = Modifier,
-    targetTextSize: TextUnit = 14.sp,
-    minTextSize: TextUnit = 9.sp,
-    maxLines: Int = 1,
-    color: Color = Color.Unspecified,
-    fontWeight: FontWeight? = null,
-    textAlign: TextAlign? = null,
-    style: TextStyle = TextStyle.Default
-) {
-    var textSize by remember(text, targetTextSize) { mutableStateOf(targetTextSize) }
-    var readyToDraw by remember(text) { mutableStateOf(false) }
-
-    Text(
-        text = text,
-        color = color,
-        maxLines = maxLines,
-        fontWeight = fontWeight,
-        textAlign = textAlign,
-        overflow = TextOverflow.Ellipsis,
-        fontSize = textSize,
-        softWrap = false,
-        style = style,
-        onTextLayout = { textLayoutResult ->
-            if (textLayoutResult.didOverflowWidth && textSize > minTextSize) {
-                textSize = (textSize.value * 0.9f).sp
-            } else {
-                readyToDraw = true
-            }
-        },
-        modifier = modifier.drawWithContent {
-            if (readyToDraw) {
-                drawContent()
-            }
-        }
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
 fun CommonButtonPreview() {
     ListenTheme {
         Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CommonButton(text = "Primary", onClick = {})
+            CommonButton(text = "Default (500ms)", onClick = {})
+            CommonButton(text = "Fast (200ms)", onClick = {}, debounceIntervalMs = 200L)
             CommonButton(text = "Danger", onClick = {}, style = CommonButtonStyle.Danger)
         }
     }

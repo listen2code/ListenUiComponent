@@ -86,25 +86,11 @@ fun CommonEditText(
         lineHeight = 24.sp
     )
 
+    // 使用纯函数进行小数位数校验与规范化，解决多小数点、超出限制及国际键盘逗号兼容问题
     val handleValueChange: (String) -> Unit = { newText ->
-        if (maxDecimalPlaces != null) {
-            val filtered = newText.filter { it.isDigit() || it == '.' }
-            val dotCount = filtered.count { it == '.' }
-            if (dotCount <= 1) {
-                val dotIndex = filtered.indexOf('.')
-                val isValidDecimals = if (dotIndex == -1) {
-                    true
-                } else if (maxDecimalPlaces == 0) {
-                    false
-                } else {
-                    filtered.length - 1 - dotIndex <= maxDecimalPlaces
-                }
-                if (isValidDecimals) {
-                    onValueChange(filtered)
-                }
-            }
-        } else {
-            onValueChange(newText)
+        val sanitized = filterDecimalInput(newText, maxDecimalPlaces)
+        if (sanitized != null) {
+            onValueChange(sanitized)
         }
     }
 
@@ -195,12 +181,42 @@ fun CommonEditText(
         )
     )
 }
+
+/**
+ * 校验并规范化带小数点的数值输入（原因：支持灵活配置最大允许小数位数，如最多 2 位、3 位，解决越界输入与国际键盘符号兼容问题）。
+ *
+ * @param input 用户最新输入的字符串
+ * @param maxDecimalPlaces 允许的最大小数位数（如 2、3；为 0 表示仅整数；为 null 表示不限制小数位数）
+ * @return 过滤规范化后的字符串；若输入格式非法（多小数点、超出限制）则返回 null 以拦截本次输入
+ */
+fun filterDecimalInput(input: String, maxDecimalPlaces: Int?): String? {
+    if (maxDecimalPlaces == null) return input
+    if (maxDecimalPlaces < 0) return null
+
+    // 兼容国际软键盘（部分语言使用逗号作为小数点）
+    val normalized = input.replace(',', '.')
+    val filtered = normalized.filter { it.isDigit() || it == '.' }
+    if (filtered.count { it == '.' } > 1) return null
+
+    // 用户直接输入小数点时自动补全前导 0（例如 "." 自动修正为 "0."）
+    val formatted = if (filtered.startsWith(".")) "0$filtered" else filtered
+    val dotIndex = formatted.indexOf('.')
+
+    val isValid = when {
+        dotIndex == -1 -> true
+        maxDecimalPlaces == 0 -> false
+        else -> formatted.length - 1 - dotIndex <= maxDecimalPlaces
+    }
+    return if (isValid) formatted else null
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CommonEditTextPreview() {
     ListenTheme {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            CommonEditText(value = "Sample Text", onValueChange = {}, placeholder = "Enter here...")
+            CommonEditText(value = "99.99", onValueChange = {}, placeholder = "Max 2 decimals", maxDecimalPlaces = 2)
+            CommonEditText(value = "3.141", onValueChange = {}, placeholder = "Max 3 decimals", maxDecimalPlaces = 3)
             CommonEditText(value = "", onValueChange = {}, placeholder = "Empty with error", errorMessage = "Invalid input")
         }
     }

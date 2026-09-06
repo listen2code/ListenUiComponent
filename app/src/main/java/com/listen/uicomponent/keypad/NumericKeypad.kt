@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.listen.uicomponent.theme.ListenTheme
 
 /**
  * Clean 4x3 Numeric Keypad Component (Option A).
@@ -184,6 +186,33 @@ private fun KeypadButton(
             fontSize = if (isDelete) 22.sp else 20.sp,
             fontWeight = FontWeight.SemiBold,
             color = contentColor
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NumericKeypadPreview() {
+    ListenTheme {
+        NumericKeypad(
+            onKeyPress = {},
+            onDeletePress = {},
+            onDonePress = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NumericKeypadWithContinuePreview() {
+    ListenTheme {
+        NumericKeypad(
+            onKeyPress = {},
+            onDeletePress = {},
+            onDonePress = {},
+            doneText = "Cancel",
+            onContinuePress = {},
+            continueText = "Save"
         )
     }
 }

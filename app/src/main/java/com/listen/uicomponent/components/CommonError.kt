@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 fun CommonError(
-    title: String = "Something went wrong",
     modifier: Modifier = Modifier,
+    title: String = "Something went wrong",
     message: String? = null,
     icon: ImageVector = Icons.Default.Warning,
     retryText: String? = "Retry",

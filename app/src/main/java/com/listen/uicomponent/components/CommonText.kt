@@ -3,7 +3,12 @@ package com.listen.uicomponent.components
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +73,49 @@ fun CommonText(
             style = style
         )
     }
+}
+
+/**
+ * Text component that automatically downscales its font size to fit within single line bounds without wrapping.
+ */
+@Composable
+fun AutoResizeText(
+    text: String,
+    modifier: Modifier = Modifier,
+    targetTextSize: TextUnit = 14.sp,
+    minTextSize: TextUnit = 9.sp,
+    maxLines: Int = 1,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+    style: TextStyle = TextStyle.Default
+) {
+    var textSize by remember(text, targetTextSize) { mutableStateOf(targetTextSize) }
+    var readyToDraw by remember(text) { mutableStateOf(false) }
+
+    Text(
+        text = text,
+        color = color,
+        maxLines = maxLines,
+        fontWeight = fontWeight,
+        textAlign = textAlign,
+        overflow = TextOverflow.Ellipsis,
+        fontSize = textSize,
+        softWrap = false,
+        style = style,
+        onTextLayout = { textLayoutResult ->
+            if (textLayoutResult.didOverflowWidth && textSize > minTextSize) {
+                textSize = (textSize.value * 0.9f).sp
+            } else {
+                readyToDraw = true
+            }
+        },
+        modifier = modifier.drawWithContent {
+            if (readyToDraw) {
+                drawContent()
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
