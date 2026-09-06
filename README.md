@@ -21,9 +21,9 @@
 
 | 组件 | 功能定位 | 核心特性 |
 | :--- | :--- | :--- |
-| **`CommonButton`** | 通用按钮 | 支持 Primary, Secondary, Tonal, Outlined, Danger, Text 六大风格；内置单行防折行文本自适应缩放 (`AutoResizeText`)；支持前置图标与点击水波纹。 |
+| **`CommonButton`** | 通用按钮 | 支持 Primary, Secondary, Tonal, Outlined, Danger, Text 六大风格；内置单行防折行文本自适应缩放 (`AutoResizeText`)；内置防抖节流 (click throttle) 阻止快速重复触发；支持前置图标与点击水波纹。 |
 | **`CommonDialog`** | 通用对话框 | 统一 16.dp 弹窗圆角、标题字阶、Elevation、图标插槽与确认/取消按钮插槽。 |
-| **`CommonEditText`** | 通用输入框 | 统一 12.dp 浅底圆角、内置一键清空 (`ClearButton`)、错误高亮提示态与键盘选项；支持 `readOnly` 模式（自动锁焦抑制软键盘）与 56.dp 固定高度约束。 |
+| **`CommonEditText`** | 通用输入框 | 统一 12.dp 浅底圆角、内置一键清空 (`ClearButton`)、错误高亮提示态与键盘选项；支持 `readOnly` 模式（自动锁焦抑制软键盘）、56.dp 固定高度约束与可配置小数位限制 (`maxDecimalPlaces`，Decimal 键盘默认 2 位）。 |
 | **`CommonEmpty`** | 通用空状态 | 统一缺省图文排版、预设 200.dp 占位高度与可插拔动作按钮。 |
 | **`CommonLoading`** | 通用加载器 | 统一居中菊花加载指示器、尺寸配置与状态文本。 |
 | **`CommonText`** | 通用文本 | 统一主题配色、单行溢出自适应缩放 (`autoResize`) 与字阶规范。 |
