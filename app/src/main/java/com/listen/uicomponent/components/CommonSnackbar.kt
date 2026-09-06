@@ -133,12 +133,15 @@ fun CommonSnackbar(
         }
     }
 }
+// 完善 Preview，全量覆盖全部 4 种类型 (Success, Error, Warning, Info)
 @Preview(showBackground = true)
 @Composable
 fun CommonSnackbarPreview() {
     ListenTheme {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CommonSnackbar(message = "Changes saved successfully", type = CommonSnackbarType.Success)
+            CommonSnackbar(message = "Approaching monthly budget threshold", type = CommonSnackbarType.Warning)
+            CommonSnackbar(message = "New version is available for update", type = CommonSnackbarType.Info, actionLabel = "Details")
             CommonSnackbar(message = "Action failed", type = CommonSnackbarType.Error, actionLabel = "Undo")
         }
     }

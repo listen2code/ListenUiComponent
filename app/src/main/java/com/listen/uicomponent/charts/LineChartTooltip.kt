@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,58 +56,93 @@ fun LineChartTooltip(
         onDismissRequest = onDismissRequest,
         properties = PopupProperties(dismissOnClickOutside = true)
     ) {
-        Surface(
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
-            shadowElevation = 8.dp,
-            tonalElevation = 8.dp,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+        LineChartTooltipContent(
+            point = point,
+            currencySymbol = currencySymbol,
+            hideAmount = hideAmount,
+            lineColor = lineColor,
+            onTooltipClick = onTooltipClick
+        )
+    }
+}
+
+@Composable
+fun LineChartTooltipContent(
+    point: LineChartPoint,
+    currencySymbol: String,
+    hideAmount: Boolean,
+    lineColor: Color,
+    modifier: Modifier = Modifier,
+    onTooltipClick: ((LineChartPoint) -> Unit)? = null
+) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp),
+        shadowElevation = 8.dp,
+        tonalElevation = 8.dp,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier
+                .clickable { onTooltipClick?.invoke(point) }
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
+            Box(
                 modifier = Modifier
-                    .clickable { onTooltipClick?.invoke(point) }
-                    .padding(horizontal = 10.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(lineColor)
+            )
+            Column {
+                Text(
+                    text = point.subLabel.ifBlank { "Day ${point.label}" },
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 11.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                val amt = if (hideAmount) "••••" else "$currencySymbol${"%.2f".format(point.value)}"
+                Text(
+                    text = amt,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            if (onTooltipClick != null) {
                 Box(
                     modifier = Modifier
-                        .size(8.dp)
+                        .size(18.dp)
                         .clip(CircleShape)
-                        .background(lineColor)
-                )
-                Column {
-                    Text(
-                        text = point.subLabel.ifBlank { "Day ${point.label}" },
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 11.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "View in Transactions",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(14.dp)
                     )
-                    val amt = if (hideAmount) "••••" else "$currencySymbol${"%.2f".format(point.value)}"
-                    Text(
-                        text = amt,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-                if (onTooltipClick != null) {
-                    Box(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = "View in Transactions",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LineChartTooltipPreview() {
+    ListenTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            LineChartTooltipContent(
+                point = LineChartPoint("15", 245.5, "09-15"),
+                currencySymbol = "￥",
+                hideAmount = false,
+                lineColor = MaterialTheme.colorScheme.primary,
+                onTooltipClick = {}
+            )
         }
     }
 }

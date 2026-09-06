@@ -160,13 +160,16 @@ fun CommonBanner(
         }
     }
 }
+// 完善 Preview，全量覆盖全部 4 种类型 (Info, Warning, Success, Error)
 @Preview(showBackground = true)
 @Composable
 fun CommonBannerPreview() {
     ListenTheme {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             CommonBanner(title = "Notice", message = "This is an informative banner.", type = CommonBannerType.Info)
-            CommonBanner(title = "Warning", message = "Please check your network connection.", type = CommonBannerType.Warning, actionText = "Retry")
+            CommonBanner(title = "Success", message = "Backup completed successfully.", type = CommonBannerType.Success)
+            CommonBanner(title = "Warning", message = "Approaching budget limit (85%).", type = CommonBannerType.Warning, actionText = "Adjust")
+            CommonBanner(title = "Error", message = "Failed to sync data with cloud.", type = CommonBannerType.Error, actionText = "Retry")
         }
     }
 }

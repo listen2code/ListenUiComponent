@@ -107,7 +107,7 @@ fun BaseScreenScaffold(
         content(paddingValues)
     }
 }
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun BaseScreenScaffoldPreview() {

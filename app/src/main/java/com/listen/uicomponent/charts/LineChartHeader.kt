@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
 
 /**
  * 曲线图顶部摘要行 (LineChartHeader)。
@@ -78,5 +80,26 @@ internal fun LineChartHeader(
         ) {
             Text(maxStr, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = primaryColor)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LineChartHeaderPreview() {
+    ListenTheme {
+        LineChartHeader(
+            totalLabel = null,
+            totalExpenseSum = 1250.0,
+            maxValue = 500.0,
+            maxLabel = null,
+            currencySymbol = "￥",
+            hideAmount = false,
+            primaryColor = MaterialTheme.colorScheme.primary,
+            points = listOf(LineChartPoint("1", 100.0, "09-01"), LineChartPoint("2", 500.0, "09-02")),
+            currentSelectedIndex = null,
+            onSelectedIndexChange = null,
+            onInternalIndexChange = {},
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
     }
 }

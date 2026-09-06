@@ -10,6 +10,10 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
 import kotlin.math.roundToInt
 
 /**
@@ -70,5 +74,18 @@ fun LineChartXAxisLabels(
                 placeable.placeRelative(left, 0)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LineChartXAxisLabelsPreview() {
+    ListenTheme {
+        LineChartXAxisLabels(
+            points = (1..30).map { day ->
+                LineChartPoint(label = "$day", value = day * 10.0, subLabel = "09-%02d".format(day))
+            },
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        )
     }
 }

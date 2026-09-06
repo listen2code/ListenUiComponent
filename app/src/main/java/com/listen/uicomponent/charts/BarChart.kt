@@ -34,6 +34,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
 import com.listen.uicomponent.theme.parseHexColor
 
 data class BarChartItem(
@@ -185,5 +187,21 @@ fun BarChart(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BarChartPreview() {
+    ListenTheme {
+        BarChart(
+            items = listOf(
+                BarChartItem(label = "Mon", value = 120.0, colorHex = "#3B82F6"),
+                BarChartItem(label = "Tue", value = 80.0, colorHex = "#10B981"),
+                BarChartItem(label = "Wed", value = 240.0, colorHex = "#EF4444"),
+                BarChartItem(label = "Thu", value = 160.0, colorHex = "#F59E0B")
+            ),
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }

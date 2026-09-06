@@ -30,8 +30,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.listen.uicomponent.theme.ListenTheme
 
 data class LogEntryUi(
     val id: String,
@@ -189,5 +191,22 @@ fun LogInspectorSheet(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LogInspectorSheetPreview() {
+    ListenTheme {
+        LogInspectorSheet(
+            logs = listOf(
+                LogEntryUi(id = "1", timestamp = System.currentTimeMillis(), levelName = "INFO", channelName = "APP", tag = "AppInit", message = "Application started"),
+                LogEntryUi(id = "2", timestamp = System.currentTimeMillis(), levelName = "WARN", channelName = "SYNC", tag = "CloudSync", message = "Network latency high"),
+                LogEntryUi(id = "3", timestamp = System.currentTimeMillis(), levelName = "ERROR", channelName = "CRASH", tag = "Handler", message = "NullPointerException caught")
+            ),
+            onClearLogs = {},
+            onExportLogs = {},
+            onDismiss = {}
+        )
     }
 }

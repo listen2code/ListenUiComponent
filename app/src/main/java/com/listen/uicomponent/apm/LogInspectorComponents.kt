@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
 import com.listen.uicomponent.theme.ExpenseRed
 import com.listen.uicomponent.theme.IncomeGreen
 import java.text.SimpleDateFormat
@@ -114,6 +116,26 @@ internal fun LogItemRow(
                     maxLines = 6
                 )
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+internal fun LogItemRowPreview() {
+    ListenTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            LogItemRow(
+                log = LogEntryUi(
+                    id = "1",
+                    timestamp = System.currentTimeMillis(),
+                    levelName = "INFO",
+                    channelName = "DB",
+                    tag = "TransactionDao",
+                    message = "Query executed in 4.2ms",
+                    traceId = "tr-101"
+                )
+            )
         }
     }
 }

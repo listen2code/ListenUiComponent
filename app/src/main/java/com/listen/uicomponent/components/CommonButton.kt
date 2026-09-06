@@ -2,6 +2,7 @@ package com.listen.uicomponent.components
 
 import android.os.SystemClock
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -161,14 +162,25 @@ fun CommonButton(
 }
 
 
+// 完善 Preview，全量覆盖全部 6 种按钮风格 (Primary, Secondary, Tonal, Outlined, Danger, Text) 及防抖参数
 @Preview(showBackground = true)
 @Composable
 fun CommonButtonPreview() {
     ListenTheme {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CommonButton(text = "Default (500ms)", onClick = {})
-            CommonButton(text = "Fast (200ms)", onClick = {}, debounceIntervalMs = 200L)
-            CommonButton(text = "Danger", onClick = {}, style = CommonButtonStyle.Danger)
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonButton(text = "Primary", onClick = {}, style = CommonButtonStyle.Primary)
+                CommonButton(text = "Secondary", onClick = {}, style = CommonButtonStyle.Secondary)
+                CommonButton(text = "Tonal", onClick = {}, style = CommonButtonStyle.Tonal)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonButton(text = "Outlined", onClick = {}, style = CommonButtonStyle.Outlined)
+                CommonButton(text = "Danger", onClick = {}, style = CommonButtonStyle.Danger)
+                CommonButton(text = "Text", onClick = {}, style = CommonButtonStyle.Text)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonButton(text = "Debounced (200ms)", onClick = {}, debounceIntervalMs = 200L)
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ import com.listen.uicomponent.theme.ListenTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -116,14 +117,29 @@ fun CommonBadge(
         }
     }
 }
+// 完善 Preview，全量覆盖全部 6 种语义化样式 (Primary, Secondary, Success, Warning, Error, Neutral) 及尺寸变体
 @Preview(showBackground = true)
 @Composable
 fun CommonBadgePreview() {
     ListenTheme {
-        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CommonBadge(text = "Primary", style = CommonBadgeStyle.Primary)
-            CommonBadge(text = "Success", style = CommonBadgeStyle.Success, showDot = true)
-            CommonBadge(text = "Error", style = CommonBadgeStyle.Error)
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            // Small 变体与圆点指示
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonBadge(text = "Primary", style = CommonBadgeStyle.Primary, size = CommonBadgeSize.Small)
+                CommonBadge(text = "Secondary", style = CommonBadgeStyle.Secondary, size = CommonBadgeSize.Small)
+                CommonBadge(text = "Success", style = CommonBadgeStyle.Success, size = CommonBadgeSize.Small, showDot = true)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonBadge(text = "Warning", style = CommonBadgeStyle.Warning, size = CommonBadgeSize.Small, showDot = true)
+                CommonBadge(text = "Error", style = CommonBadgeStyle.Error, size = CommonBadgeSize.Small, showDot = true)
+                CommonBadge(text = "30%", style = CommonBadgeStyle.Neutral, size = CommonBadgeSize.Small)
+            }
+            // Medium 尺寸变体
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CommonBadge(text = "Normal", style = CommonBadgeStyle.Success, size = CommonBadgeSize.Medium, showDot = true)
+                CommonBadge(text = "Warning", style = CommonBadgeStyle.Warning, size = CommonBadgeSize.Medium, showDot = true)
+                CommonBadge(text = "Overbudget", style = CommonBadgeStyle.Error, size = CommonBadgeSize.Medium, showDot = true)
+            }
         }
     }
 }

@@ -12,6 +12,12 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 
 enum class ThemeMode {
     LIGHT,
@@ -105,4 +111,34 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+@Preview(showBackground = true, name = "Theme Light")
+@Composable
+fun ListenThemeLightPreview() {
+    ListenTheme(themeMode = ThemeMode.LIGHT) {
+        Surface(modifier = Modifier.padding(16.dp)) {
+            Text(text = "ListenTheme Light Mode")
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Theme Dark")
+@Composable
+fun ListenThemeDarkPreview() {
+    ListenTheme(themeMode = ThemeMode.DARK) {
+        Surface(modifier = Modifier.padding(16.dp)) {
+            Text(text = "ListenTheme Dark Mode")
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Theme System")
+@Composable
+fun ListenThemeSystemPreview() {
+    ListenTheme(themeMode = ThemeMode.SYSTEM) {
+        Surface(modifier = Modifier.padding(16.dp)) {
+            Text(text = "ListenTheme System Mode")
+        }
+    }
 }

@@ -32,12 +32,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.listen.uicomponent.theme.AccentColor
-import com.listen.uicomponent.theme.ListenTheme
-import com.listen.uicomponent.theme.ThemeMode
 import com.listen.uicomponent.theme.parseHexColor
 
 data class PieChartItem(
@@ -247,19 +243,6 @@ fun DonutChart(
                     tapOffset = null
                 },
                 onItemClick = onTooltipClick
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DonutChartPreview() {
-    ListenTheme(themeMode = ThemeMode.LIGHT, accentColor = AccentColor.EMERALD) {
-        Surface(modifier = Modifier.padding(16.dp), color = MaterialTheme.colorScheme.surface) {
-            DonutChart(
-                items = listOf(PieChartItem("Food", "#FF5722", 150.0, 0.6f), PieChartItem("Rent", "#4CAF50", 100.0, 0.4f)),
-                totalValue = 250.0, centerTitle = "Total", centerValueText = "$250.00"
             )
         }
     }
