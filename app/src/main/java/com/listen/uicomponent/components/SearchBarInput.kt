@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -90,6 +93,15 @@ fun SearchBarInput(
                         .clickable { onQueryChange("") }
                 )
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun SearchBarInputPreview() {
+    ListenTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            SearchBarInput(query = "Supermarket", onQueryChange = {})
         }
     }
 }

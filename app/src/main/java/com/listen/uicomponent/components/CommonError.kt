@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -92,5 +95,12 @@ fun CommonError(
                 )
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonErrorPreview() {
+    ListenTheme {
+        CommonError(title = "Failed to load data", message = "Network timeout occurred", onRetry = {})
     }
 }

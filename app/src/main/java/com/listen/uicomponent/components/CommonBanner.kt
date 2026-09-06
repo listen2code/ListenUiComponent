@@ -1,5 +1,9 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -153,6 +157,16 @@ fun CommonBanner(
                     }
                 }
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonBannerPreview() {
+    ListenTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            CommonBanner(title = "Notice", message = "This is an informative banner.", type = CommonBannerType.Info)
+            CommonBanner(title = "Warning", message = "Please check your network connection.", type = CommonBannerType.Warning, actionText = "Retry")
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -119,6 +122,17 @@ fun CommonSkeletonRow(
         ) {
             CommonSkeletonBox(height = 14.dp, width = 140.dp)
             CommonSkeletonBox(height = 10.dp, width = 220.dp)
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonSkeletonPreview() {
+    ListenTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            CommonSkeletonRow()
+            CommonSkeletonRow()
+            CommonSkeletonBox(height = 60.dp)
         }
     }
 }

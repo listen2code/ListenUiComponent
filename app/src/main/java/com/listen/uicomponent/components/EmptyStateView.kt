@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,5 +30,12 @@ fun EmptyStateView(
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun EmptyStateViewPreview() {
+    ListenTheme {
+        EmptyStateView(message = "No items available")
     }
 }

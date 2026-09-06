@@ -1,5 +1,10 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -37,5 +42,12 @@ fun IconBadge(
             tint = bg,
             modifier = Modifier.size(iconSize)
         )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun IconBadgePreview() {
+    ListenTheme {
+        IconBadge(imageVector = Icons.Default.Star, colorHex = "#10B981")
     }
 }

@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -110,6 +113,17 @@ fun CommonBadge(
                 color = textColor,
                 maxLines = 1
             )
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonBadgePreview() {
+    ListenTheme {
+        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            CommonBadge(text = "Primary", style = CommonBadgeStyle.Primary)
+            CommonBadge(text = "Success", style = CommonBadgeStyle.Success, showDot = true)
+            CommonBadge(text = "Error", style = CommonBadgeStyle.Error)
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -61,4 +65,18 @@ fun CommonDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         tonalElevation = 6.dp
     )
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonDialogPreview() {
+    ListenTheme {
+        CommonDialog(
+            title = "Confirmation",
+            onDismissRequest = {},
+            confirmButton = { Text("Confirm", modifier = Modifier.padding(8.dp)) },
+            dismissButton = { Text("Cancel", modifier = Modifier.padding(8.dp)) }
+        ) {
+            Text("Are you sure you want to proceed?")
+        }
+    }
 }

@@ -1,5 +1,10 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,4 +41,15 @@ fun CommonDivider(
             .height(thickness)
             .background(color)
     )
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonDividerPreview() {
+    ListenTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Above Divider")
+            CommonDivider(modifier = Modifier.padding(vertical = 8.dp))
+            Text("Below Divider")
+        }
+    }
 }

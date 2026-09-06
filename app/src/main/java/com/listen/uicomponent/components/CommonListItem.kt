@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -125,6 +128,16 @@ fun CommonListItem(
             if (showDivider) {
                 CommonDivider(startIndent = if (leadingContent != null) 52.dp else 16.dp)
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonListItemPreview() {
+    ListenTheme {
+        Column {
+            CommonListItem(title = "Account Settings", subtitle = "Manage credentials & profile", onClick = {})
+            CommonListItem(title = "Dark Mode", subtitle = "Switch color theme", showArrow = false)
         }
     }
 }

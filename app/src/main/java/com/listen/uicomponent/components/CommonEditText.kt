@@ -1,5 +1,11 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -188,4 +194,14 @@ fun CommonEditText(
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)
         )
     )
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonEditTextPreview() {
+    ListenTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            CommonEditText(value = "Sample Text", onValueChange = {}, placeholder = "Enter here...")
+            CommonEditText(value = "", onValueChange = {}, placeholder = "Empty with error", errorMessage = "Invalid input")
+        }
+    }
 }

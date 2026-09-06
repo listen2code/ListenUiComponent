@@ -1,5 +1,10 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Text
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,6 +93,20 @@ fun CommonList(
                     content = content
                 )
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonListPreview() {
+    ListenTheme {
+        CommonList(
+            isLoading = false,
+            isEmpty = false,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            item { Text("List item 1", modifier = Modifier.padding(16.dp)) }
+            item { Text("List item 2", modifier = Modifier.padding(16.dp)) }
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -107,6 +111,20 @@ fun SegmentedProgressBar(
                         .background(animatedColor)
                 )
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun SegmentedProgressBarPreview() {
+    ListenTheme {
+        val sampleSegments = listOf(
+            ProgressSegment(percentage = 0.5f, colorHex = "#EF4444"),
+            ProgressSegment(percentage = 0.3f, colorHex = "#3B82F6"),
+            ProgressSegment(percentage = 0.2f, colorHex = "#10B981")
+        )
+        Box(modifier = Modifier.padding(16.dp)) {
+            SegmentedProgressBar(segments = sampleSegments)
         }
     }
 }

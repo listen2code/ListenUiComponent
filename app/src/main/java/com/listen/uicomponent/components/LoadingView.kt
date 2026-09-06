@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,5 +22,12 @@ fun LoadingView(
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.primary
         )
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LoadingViewPreview() {
+    ListenTheme {
+        LoadingView()
     }
 }

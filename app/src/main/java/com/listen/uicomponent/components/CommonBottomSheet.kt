@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -100,6 +103,19 @@ fun CommonBottomSheet(
 
             content()
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun CommonBottomSheetPreview() {
+    ListenTheme {
+        CommonBottomSheet(
+            title = "Sheet Title",
+            onDismissRequest = {}
+        ) {
+            Text("Bottom sheet body content", modifier = Modifier.padding(16.dp))
         }
     }
 }

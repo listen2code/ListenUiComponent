@@ -1,5 +1,11 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
+
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -99,5 +105,20 @@ fun BaseScreenScaffold(
     ) { paddingValues ->
         // paddingValues 包含了 TopAppBar 和 BottomBar 所占据的空间，防止内容被遮挡。
         content(paddingValues)
+    }
+}
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+fun BaseScreenScaffoldPreview() {
+    ListenTheme {
+        BaseScreenScaffold(
+            title = "Base Scaffold",
+            floatingActionButton = {}
+        ) { padding ->
+            Box(modifier = Modifier.padding(padding)) {
+                Text("Content Area", modifier = Modifier.padding(16.dp))
+            }
+        }
     }
 }

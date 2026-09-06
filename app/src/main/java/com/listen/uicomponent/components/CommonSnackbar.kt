@@ -1,5 +1,9 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+import androidx.compose.foundation.layout.Column
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -126,6 +130,16 @@ fun CommonSnackbar(
                     }
                 }
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonSnackbarPreview() {
+    ListenTheme {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            CommonSnackbar(message = "Changes saved successfully", type = CommonSnackbarType.Success)
+            CommonSnackbar(message = "Action failed", type = CommonSnackbarType.Error, actionLabel = "Undo")
         }
     }
 }

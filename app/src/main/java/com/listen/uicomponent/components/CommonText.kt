@@ -9,8 +9,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.listen.uicomponent.theme.ListenTheme
 
 /**
  * Universal text component across Listen applications supporting theme tokens and auto-scaling.
@@ -65,5 +67,13 @@ fun CommonText(
             textAlign = textAlign,
             style = style
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CommonTextPreview() {
+    ListenTheme {
+        CommonText(text = "Hello Listen UI Component")
     }
 }

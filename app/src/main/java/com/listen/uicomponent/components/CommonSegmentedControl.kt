@@ -1,5 +1,8 @@
 package com.listen.uicomponent.components
 
+import androidx.compose.ui.tooling.preview.Preview
+import com.listen.uicomponent.theme.ListenTheme
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
@@ -115,6 +118,15 @@ fun CommonSegmentedControl(
                     )
                 }
             }
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun CommonSegmentedControlPreview() {
+    ListenTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            CommonSegmentedControl(items = listOf("Expense", "Income"), selectedIndex = 0, onIndexChange = {})
         }
     }
 }
