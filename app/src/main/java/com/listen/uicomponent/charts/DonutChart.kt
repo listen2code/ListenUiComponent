@@ -59,7 +59,7 @@ fun DonutChart(
 ) {
     val isEmpty = items.isEmpty() || totalValue <= 0
 
-    val displayValue = centerValueText.ifBlank { "%.2f".format(totalValue) }
+    val displayValue = centerValueText.ifBlank { totalValue.formatChartAmount() }
     val valueFontSize = when {
         displayValue.length > 13 -> 12.sp
         displayValue.length > 10 -> 14.sp

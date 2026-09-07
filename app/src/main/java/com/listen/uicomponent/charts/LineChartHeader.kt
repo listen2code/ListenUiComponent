@@ -59,7 +59,7 @@ internal fun LineChartHeader(
                     .size(8.dp)
                     .background(primaryColor, CircleShape)
             )
-            val totalStr = if (hideAmount) "••••" else "$currencySymbol${"%.2f".format(totalExpenseSum)}"
+            val totalStr = if (hideAmount) "••••" else "$currencySymbol${totalExpenseSum.formatChartAmount()}"
             Text(totalLabel ?: totalStr, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         }
         val maxIdx = remember(points) { points.indices.maxByOrNull { points[it].value } }

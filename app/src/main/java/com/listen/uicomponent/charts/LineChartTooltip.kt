@@ -103,7 +103,7 @@ fun LineChartTooltipContent(
                     fontSize = 11.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                val amt = if (hideAmount) "••••" else "$currencySymbol${"%.2f".format(point.value)}"
+                val amt = if (hideAmount) "••••" else "$currencySymbol${point.value.formatChartAmount()}"
                 Text(
                     text = amt,
                     fontSize = 12.sp,
