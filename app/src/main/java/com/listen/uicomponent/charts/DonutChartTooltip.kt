@@ -102,7 +102,7 @@ fun DonutChartTooltipContent(
                 )
                 val amt = if (hideAmount) "••••" else "$currencySymbol${item.value.formatChartAmount()}"
                 Text(
-                    text = "$amt (${"%.1f".format(item.percentage * 100)}%)",
+                    text = "$amt (${(item.percentage * 100).formatPercentage()}%)",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = parseHexColor(item.colorHex)
