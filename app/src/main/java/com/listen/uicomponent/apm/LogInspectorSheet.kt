@@ -60,10 +60,14 @@ fun LogInspectorSheet(
     modifier: Modifier = Modifier,
     lang: String = "zh"
 ) {
+    // skipPartiallyExpanded = true: 强制 BottomSheet 直接展开到全屏高度，跳过半展开的中间状态，方便查看长列表
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedChannel by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
 
+    // 双层过滤机制：
+    // 第一层：基于 Chip 的 Channel 维度过滤
+    // 第二层：基于关键词的文本搜索，覆盖 message、tag 和 traceId
     val filteredLogs = logs.filter { entry ->
         val channelMatch = selectedChannel == null || entry.channelName == selectedChannel
         val queryMatch = searchQuery.isBlank() ||
@@ -75,6 +79,8 @@ fun LogInspectorSheet(
 
     val channels = listOf("APP", "DB", "SYNC", "CRASH")
 
+    // 利用结构化析构 (Destructuring) 实现轻量级多语言支持。
+    // 在不依赖 Android 繁重 string 资源文件的前提下，快速实现界面语言切换
     val (titleText, clearText, exportText, placeholderText, emptyText) = when (lang.lowercase()) {
         "en" -> Tuple5("APM Logs & Observability", "Clear", "Export", "Search TraceId / Tag / Keyword...", "No matching logs found")
         "ja" -> Tuple5("APM ログと観測性", "消去", "エクスポート", "TraceId / Tag / キーワード検索...", "一致するログはありません")
@@ -89,6 +95,7 @@ fun LogInspectorSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                // 屏幕占比设计：最高占据 85% 高度，顶部留白 15% 能够让用户看到底层父页面的上下文
                 .fillMaxHeight(0.85f)
                 .padding(horizontal = 14.dp, vertical = 2.dp)
         ) {
@@ -185,6 +192,7 @@ fun LogInspectorSheet(
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
+                    // 指定唯一的 key，使得 Compose 在列表更新时能够执行高效的差异比对 (diffing)，避免不必要的重组
                     items(filteredLogs, key = { it.id }) { log ->
                         LogItemRow(log)
                     }

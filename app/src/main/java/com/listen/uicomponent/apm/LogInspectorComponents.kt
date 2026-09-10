@@ -29,6 +29,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * 内部辅助数据结构，作为一个轻量级的替代方案用于处理多语言文本元组，
+ * 避免了为仅仅传递几个 i18n 字符串而创建专门的数据类。
+ */
 internal data class Tuple5<A, B, C, D, E>(val a: A, val b: B, val c: C, val d: D, val e: E)
 
 /**
@@ -42,6 +46,7 @@ internal fun LogItemRow(
     val sdf = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
     val timeStr = sdf.format(Date(log.timestamp))
 
+    // 通过不同颜色直观展示日志严重程度，建立视觉层级结构 (Gray=DEBUG, Green=INFO, Amber=WARN, Red=ERROR)
     val levelColor = when (log.levelName) {
         "DEBUG" -> Color.Gray
         "INFO" -> IncomeGreen
@@ -54,6 +59,8 @@ internal fun LogItemRow(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
+            // 使用带 50% 透明度的 surfaceVariant 颜色作为卡片背景。
+            // 这在保持文本高可读性的同时，避免了视觉上的厚重感
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .padding(6.dp)
     ) {
@@ -86,6 +93,7 @@ internal fun LogItemRow(
                             text = "[$trace]",
                             fontSize = 9.sp,
                             color = MaterialTheme.colorScheme.tertiary,
+                            // 等宽字体设计，确保技术日志中 ID 信息的对齐和排版一致性
                             fontFamily = FontFamily.Monospace
                         )
                     }
@@ -102,6 +110,7 @@ internal fun LogItemRow(
             Text(
                 text = log.message,
                 fontSize = 11.sp,
+                // 等宽字体对齐文本内容
                 fontFamily = FontFamily.Monospace,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -113,6 +122,7 @@ internal fun LogItemRow(
                     fontSize = 9.sp,
                     color = ExpenseRed,
                     fontFamily = FontFamily.Monospace,
+                    // 限制最大行数，防止单条 Crash 堆栈信息过长导致整个列表可见区域被完全霸占
                     maxLines = 6
                 )
             }
