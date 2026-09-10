@@ -130,6 +130,9 @@ fun CommonButton(
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
                 contentPadding = contentPadding
             ) {
                 content()
