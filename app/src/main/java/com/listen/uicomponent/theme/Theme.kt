@@ -29,6 +29,7 @@ enum class ThemeMode {
 fun ListenTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     accentColor: AccentColor = AccentColor.EMERALD,
+    pureBlackDark: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val darkTheme = when (themeMode) {
@@ -40,26 +41,53 @@ fun ListenTheme(
     val primaryColor = parseHexColor(accentColor.colorHex)
 
     val colorScheme = if (darkTheme) {
-        darkColorScheme(
-            primary = primaryColor,
-            onPrimary = Color.White,
-            primaryContainer = primaryColor.copy(alpha = 0.25f),
-            onPrimaryContainer = primaryColor,
-            secondary = primaryColor,
-            onSecondary = Color.White,
-            secondaryContainer = primaryColor.copy(alpha = 0.25f),
-            onSecondaryContainer = primaryColor,
-            tertiary = primaryColor,
-            onTertiary = Color.White,
-            tertiaryContainer = primaryColor.copy(alpha = 0.25f),
-            onTertiaryContainer = primaryColor,
-            background = DarkBackground,
-            onBackground = DarkOnBackground,
-            surface = DarkSurface,
-            onSurface = DarkOnSurface,
-            surfaceVariant = DarkSurfaceVariant,
-            onSurfaceVariant = DarkOnBackground
-        )
+        if (pureBlackDark) {
+            darkColorScheme(
+                primary = primaryColor,
+                onPrimary = Color.White,
+                primaryContainer = primaryColor.copy(alpha = 0.25f),
+                onPrimaryContainer = primaryColor,
+                secondary = primaryColor,
+                onSecondary = Color.White,
+                secondaryContainer = primaryColor.copy(alpha = 0.25f),
+                onSecondaryContainer = primaryColor,
+                tertiary = primaryColor,
+                onTertiary = Color.White,
+                tertiaryContainer = primaryColor.copy(alpha = 0.25f),
+                onTertiaryContainer = primaryColor,
+                background = PureBlackBackground,
+                onBackground = PureBlackOnBackground,
+                surface = PureBlackSurface,
+                onSurface = PureBlackOnSurface,
+                surfaceVariant = PureBlackSurfaceVariant,
+                onSurfaceVariant = DarkOnBackground,
+                outline = PureBlackOutline,
+                outlineVariant = PureBlackOutlineVariant
+            )
+        } else {
+            darkColorScheme(
+                primary = primaryColor,
+                onPrimary = Color.White,
+                primaryContainer = primaryColor.copy(alpha = 0.25f),
+                onPrimaryContainer = primaryColor,
+                secondary = primaryColor,
+                onSecondary = Color.White,
+                secondaryContainer = primaryColor.copy(alpha = 0.25f),
+                onSecondaryContainer = primaryColor,
+                tertiary = primaryColor,
+                onTertiary = Color.White,
+                tertiaryContainer = primaryColor.copy(alpha = 0.25f),
+                onTertiaryContainer = primaryColor,
+                background = DarkBackground,
+                onBackground = DarkOnBackground,
+                surface = DarkSurface,
+                onSurface = DarkOnSurface,
+                surfaceVariant = DarkSurfaceVariant,
+                onSurfaceVariant = DarkOnBackground,
+                outline = Color(0xFF383838),
+                outlineVariant = Color(0xFF2C2C2C)
+            )
+        }
     } else {
         lightColorScheme(
             primary = primaryColor,
