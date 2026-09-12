@@ -1,7 +1,10 @@
 package com.listen.uicomponent.components
 
 import android.os.SystemClock
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -60,7 +65,9 @@ enum class CommonButtonStyle {
  * @param icon Optional leading icon
  * @param cornerRadius Button corner radius
  * @param contentPadding Inner padding values
+ * @param onLongClick Optional long click callback
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CommonButton(
     text: String,
@@ -71,7 +78,8 @@ fun CommonButton(
     debounceIntervalMs: Long = 500L,
     icon: (@Composable () -> Unit)? = null,
     cornerRadius: Dp = 10.dp,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+    contentPadding: PaddingValues = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+    onLongClick: (() -> Unit)? = null
 ) {
     // [Fix/Feature] 防连击保护：避免用户快速连续点击（例如手抖、网络未响应时的狂点）导致多次提交、重复弹窗或并发请求。
     // 使用 SystemClock.uptimeMillis() 单调递增时钟进行时间差判断，若距离上次触发未达到指定毫秒阈值则拦截此次点击。
@@ -123,42 +131,83 @@ fun CommonButton(
         }
     }
 
-    when (style) {
-        CommonButtonStyle.Outlined -> {
-            OutlinedButton(
-                onClick = debouncedOnClick,
-                modifier = modifier,
-                enabled = enabled,
-                shape = shape,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-                contentPadding = contentPadding
+    if (onLongClick != null) {
+        val surfaceColor = when (style) {
+            CommonButtonStyle.Primary -> MaterialTheme.colorScheme.primary
+            CommonButtonStyle.Secondary, CommonButtonStyle.Tonal -> MaterialTheme.colorScheme.secondaryContainer
+            CommonButtonStyle.Danger -> MaterialTheme.colorScheme.error
+            CommonButtonStyle.Outlined, CommonButtonStyle.Text -> Color.Transparent
+        }
+        val surfaceContentColor = when (style) {
+            CommonButtonStyle.Primary -> MaterialTheme.colorScheme.onPrimary
+            CommonButtonStyle.Secondary, CommonButtonStyle.Tonal -> MaterialTheme.colorScheme.onSecondaryContainer
+            CommonButtonStyle.Danger -> MaterialTheme.colorScheme.onError
+            CommonButtonStyle.Outlined, CommonButtonStyle.Text -> MaterialTheme.colorScheme.primary
+        }
+        val surfaceBorder = if (style == CommonButtonStyle.Outlined) {
+            ButtonDefaults.outlinedButtonBorder(enabled)
+        } else {
+            null
+        }
+
+        Surface(
+            shape = shape,
+            color = surfaceColor,
+            contentColor = surfaceContentColor,
+            border = surfaceBorder,
+            modifier = modifier
+                .clip(shape)
+                .combinedClickable(
+                    enabled = enabled,
+                    onClick = debouncedOnClick,
+                    onLongClick = onLongClick
+                )
+        ) {
+            Box(
+                modifier = Modifier.padding(contentPadding),
+                contentAlignment = Alignment.Center
             ) {
                 content()
             }
         }
-        CommonButtonStyle.Text -> {
-            TextButton(
-                onClick = debouncedOnClick,
-                modifier = modifier,
-                enabled = enabled,
-                shape = shape,
-                contentPadding = contentPadding
-            ) {
-                content()
+    } else {
+        when (style) {
+            CommonButtonStyle.Outlined -> {
+                OutlinedButton(
+                    onClick = debouncedOnClick,
+                    modifier = modifier,
+                    enabled = enabled,
+                    shape = shape,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    contentPadding = contentPadding
+                ) {
+                    content()
+                }
             }
-        }
-        else -> {
-            Button(
-                onClick = debouncedOnClick,
-                modifier = modifier,
-                enabled = enabled,
-                shape = shape,
-                colors = colors ?: ButtonDefaults.buttonColors(),
-                contentPadding = contentPadding
-            ) {
-                content()
+            CommonButtonStyle.Text -> {
+                TextButton(
+                    onClick = debouncedOnClick,
+                    modifier = modifier,
+                    enabled = enabled,
+                    shape = shape,
+                    contentPadding = contentPadding
+                ) {
+                    content()
+                }
+            }
+            else -> {
+                Button(
+                    onClick = debouncedOnClick,
+                    modifier = modifier,
+                    enabled = enabled,
+                    shape = shape,
+                    colors = colors ?: ButtonDefaults.buttonColors(),
+                    contentPadding = contentPadding
+                ) {
+                    content()
+                }
             }
         }
     }
